@@ -137,6 +137,7 @@ const inputColumns = computed(() => {
   const firstInput = inputs.value[0];
   if (Array.isArray(firstInput)) {
     if (firstInput.length < input_kinds_n.value) {
+      // 使表格显示完全
       for (let i = firstInput.length; i < input_kinds_n.value; i++) {
         firstInput.push(null); // 或者使用其他默认值
       }
