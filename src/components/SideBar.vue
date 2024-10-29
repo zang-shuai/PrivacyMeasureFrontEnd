@@ -94,16 +94,16 @@ const discreteAlgorithms = [
 const keyValueAlgorithms = [
   { name: 'PrivKVM' },
   { name: 'PCKV-UE' },
-  { name: 'PCKV-RR' }
+  { name: 'PCKV-GRR' }
 ];
 
 const setAlgorithms = [
   { name: 'd-PAPPOR' },
-  { name: 'OLHSampling' },
-  { name: 'OUESampling' },
+  // { name: 'OLHSampling' },
+  // { name: 'OUESampling' },
   { name: 'PrivSet' },
   { name: 'Wheel' },
-  { name: 'LdpMinner' }
+  // { name: 'LdpMinner' }
 ];
 </script>
 
