@@ -42,11 +42,11 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="其他">
+          <!-- <el-form-item label="其他">
             <el-select v-model="formData.others" multiple placeholder="请选择其他列">
               <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-card>
 
         <el-card class="mb-4">
@@ -108,14 +108,8 @@
     </el-main>
   </el-container>
 
-  <el-dialog
-    v-model="isProcessing"
-    title="数据处理中"
-    width="30%"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :show-close="false"
-  >
+  <el-dialog v-model="isProcessing" title="数据处理中" width="30%" :close-on-click-modal="false"
+    :close-on-press-escape="false" :show-close="false">
     <div class="processing-content">
       <el-progress type="circle" :percentage="processingPercentage" />
       <p>{{ processingMessage }}</p>
@@ -147,7 +141,7 @@ const formData = reactive({
   prv: [],
   pub: [],
   index: [],
-  others: [],
+  // others: [],
   alg: ''
 });
 
@@ -182,7 +176,7 @@ const handleFile = (file, outputId) => {
       formData.prv = [...tableColumns1.value];
       formData.pub = [...tableColumns1.value];
       formData.index = [...tableColumns1.value];
-      formData.others = [...tableColumns1.value];
+      // formData.others = [...tableColumns1.value];
     } else {
       tableColumns2.value = jsonData[0];
       tableData2.value = jsonData.slice(1).map(row => {
@@ -198,9 +192,8 @@ const handleFile = (file, outputId) => {
 };
 
 const submitForm = async (formId, url) => {
-  const form = document.getElementById(formId);
-  const formData = new FormData(form);
 
+  console.log("debug 232323 ", formData)
   try {
     isProcessing.value = true;
     processingPercentage.value = 0;
@@ -214,8 +207,11 @@ const submitForm = async (formId, url) => {
     }, 500);
 
     const response = await fetch(base_url + url, {
+      headers: {
+        'Content-Type': 'application/json', // 设置请求头为 JSON
+      },
       method: 'POST',
-      body: formData,
+      body: JSON.stringify(formData),
     });
 
     clearInterval(progressInterval);
