@@ -47,7 +47,7 @@ const formData = reactive({
   ksubset_format: {content: '', show: true},
   privKVM_format: {content: '', show: true},
   pckvUE_format: {content: '', show: true},
-  pckvRR_format: {content: '', show: true},
+  pckvGRR_format: {content: '', show: true},
   dPAPPOR_format: {content: '', show: true},
   OLHSampling_format: {content: '', show: true},
   OUESampling_format: {content: '', show: true},
@@ -101,16 +101,16 @@ const formDataOfAlg = {
     "call_method", "alg_name", "alg_type", "discrete_domain", "code_file", "ksubset_format", "epsilon", "whole_n"
   ],
   PrivKVM: [
-    "alg_name", "call_method", "alg_type", "key_domain", "value_domain",
-    "code_file", "privKVM_format", "epsilon", "whole_n"
+    "alg_name", "call_method", "alg_type", "key_domain", "value_domain", "code_file",
+    "privKVM_format", "epsilon", "whole_n"
   ],
   'PCKV-UE': [
-    "alg_name", "call_method", "alg_type", "kv_domain", "code_file",
+    "alg_name", "call_method", "alg_type",  "key_domain", "value_domain", "code_file",
     "pckvUE_format", "epsilon", "whole_n"
   ],
-  'PCKV-RR': [
-    "alg_name", "call_method", "alg_type", "kv_domain", "code_file",
-    "pckvRR_format", "epsilon", "whole_n"
+  'PCKV-GRR': [
+    "alg_name", "call_method", "alg_type",  "key_domain", "value_domain", "code_file",
+    "pckvGRR_format", "epsilon", "whole_n"
   ],
   'd-PAPPOR': [
     "alg_name", "call_method", "alg_type",
@@ -295,7 +295,7 @@ const setDefaultValue = async (selectDiv, alg) => {
     formData.epsilon.content = 0.4
     formData.whole_n.content = 10000
   } else if (alg === "PrivKVM") {
-    formData.discrete_domain.content = "[1,2,3,4,5,6,7,8,9]"
+    formData.key_domain.content = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50"
     formData.code_file.content = `# -*- coding: utf-8 -*-
 import numpy as np
 import random
@@ -430,10 +430,12 @@ class PrivKVM(object):
 if __name__ == '__main__':
     import sys
 
-    inputs = eval(sys.argv[1])
-    N_key = int(sys.argv[2])
-    N_iter = int(sys.argv[3])
-    epsilon = float(sys.argv[4])
+    N_key = int(sys.argv[1])
+    N_iter = int(sys.argv[2])
+    epsilon = float(sys.argv[3])
+    inputs = None
+    with open(sys.argv[4], "r") as file:
+        inputs = eval(file.read())
 
     run_ldp = PrivKVM(inputs, N_key, N_iter, epsilon)
     index_data, perturb_data = run_ldp.run()
@@ -444,7 +446,208 @@ if __name__ == '__main__':
     }
     print(data)`;
     formData.epsilon.content = 4
-    formData.whole_n.content = 1000
+    formData.whole_n.content = 10000
+  } else if (alg === "PCKV-UE") {
+    formData.key_domain.content = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50"
+    formData.code_file.content = `# -*- coding: utf-8 -*-
+import numpy as np
+import random
+
+class PCKV_UE(object):
+    def __init__(self, data: list, N_key: int, l: int, a: float, b: float, p: float):
+        super(PCKV_UE, self).__init__()
+        # 总体数据
+        self.data = data
+        # 用户数量
+        self.N_user = len(self.data)
+        # 键域长度
+        self.N_key = N_key
+        # 填充长度
+        self.l = l
+        # 键1变1的离散概率
+        self.a = a
+        # 键0变0的离散概率
+        self.b = b
+        # 值的扰动概率
+        self.p = p
+
+    def run(self):
+        sample_list, perturb_list = self.UEPerturbation()
+        return sample_list, perturb_list
+
+    def sample(self, S):
+        N_S = len(S)
+        eta = N_S / (max(N_S, self.l))
+
+        if np.random.binomial(1, eta, 1) == 1:
+            index = random.randint(0, N_S - 1)
+            key = int(S[index][0])
+            value = S[index][1]
+        else:
+            key = self.N_key + random.randint(1, self.l)
+            value = 0
+        sp = list()
+        sp.append(key)
+        sp.append(value)
+        return sp
+
+    def Clip(self, x, lb, ub):
+        if x < lb:
+            x = lb
+        if x > ub:
+            x = ub
+        return x
+
+    def UEPerturbation(self):
+        counter = np.zeros((2, self.N_key + self.l))
+
+        sample_list = []
+        perturb_list = []
+
+        for i in range(self.N_user):
+            S = self.data[i]
+            sa = self.sample(S)
+            key = int(sa[0])
+            value = sa[1]
+            x = int(np.random.choice([-1, 1], 1, p=[(1 - value) / 2, (1 + value) / 2]))
+            y = np.random.choice([-1, 1, 0], self.N_key + self.l, p=[self.b / 2, self.b / 2, 1 - self.b])
+            y[key - 1] = np.random.choice([x, -x, 0], 1, p=[self.a * self.p, self.a * (1 - self.p), 1 - self.a])
+            counter[0] = counter[0] + np.ceil(0.5 * y)
+            counter[1] = counter[1] + np.ceil(-0.5 * y)
+
+            sample_list.append([key, x])
+            perturb_list.append(y.tolist())
+        return sample_list, perturb_list
+
+if __name__ == '__main__':
+    import sys
+
+    N_key = int(sys.argv[1])
+    l = int(sys.argv[2])
+    a = float(sys.argv[3])
+    b = float(sys.argv[4])
+    p = float(sys.argv[5])
+    inputs = None
+    with open(sys.argv[6], "r") as file:
+        inputs = eval(file.read())
+
+    run_ldp = PCKV_UE(inputs, N_key, l, a, b, p)
+    sample_data, perturb_data = run_ldp.run()
+
+    data = {
+        "sample_list": sample_data,
+        "perturb_list": perturb_data
+    }
+    print(data)`;
+    formData.epsilon.content = 4
+    formData.whole_n.content = 10000
+  }  else if (alg === "PCKV-GRR") {
+    formData.key_domain.content = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50"
+    formData.code_file.content = `# -*- coding: utf-8 -*-
+import numpy as np
+import random
+
+class PCKV_GRR(object):
+    def __init__(self, data: list, N_key: int, l: int, a: float, b: float, p: float):
+        super(PCKV_GRR, self).__init__()
+        # 总体数据
+        self.data = data
+        # 用户数量
+        self.N_user = len(self.data)
+        # 键域长度
+        self.N_key = N_key
+        # 填充长度
+        self.l = l
+        # 键1变1的离散概率
+        self.a = a
+        # 键0变0的离散概率
+        self.b = b
+        # 值的扰动概率
+        self.p = p
+
+    def run(self):
+        sample_list, perturb_list = self.Perturbation()
+        return sample_list, perturb_list
+
+    def sample(self, S):
+        N_S = len(S)
+        eta = N_S / (max(N_S, self.l))
+
+        if np.random.binomial(1, eta, 1) == 1:
+            index = random.randint(0, N_S - 1)
+            key = int(S[index][0])
+            value = S[index][1]
+        else:
+            key = self.N_key + random.randint(1, self.l)
+            value = 0
+        sp = list()
+        sp.append(key)
+        sp.append(value)
+        return sp
+
+    def Clip(self, x, lb, ub):
+        if x < lb:
+            x = lb
+        if x > ub:
+            x = ub
+        return x
+
+    def Perturbation(self):
+        counter = np.zeros((2, self.N_key + self.l))
+        randValue = np.random.choice([-1, 1], self.N_user, p=[0.5, 0.5])
+
+        sample_list = []
+        perturb_list = []
+
+        for i in range(self.N_user):
+            S = self.data[i]
+            sa = self.sample(S)
+            key = (int)(sa[0])
+            value = sa[1]
+            x = np.random.choice([-1, 1], 1, p=[(1 - value) / 2, (1 + value) / 2])
+
+            sample_list.append([int(key), int(x)])
+
+            flag = int(np.random.choice([-1, 1], 1, p=[1 - self.a, self.a]))
+            if flag == 1:
+                value = x * np.random.choice([1, -1], 1, p=[self.p, 1 - self.p])
+            else:
+                temp = random.randint(1, self.N_key + self.l - 1)
+                if temp >= key:
+                    key = temp + 1
+                else:
+                    key = temp
+                value = randValue[i]
+
+            counter[0][key - 1] = counter[0][key - 1] + (value == 1)
+            counter[1][key - 1] = counter[1][key - 1] + (value == -1)
+
+            perturb_list.append([int(key), int(value)])
+
+        return sample_list, perturb_list
+
+if __name__ == '__main__':
+    import sys
+
+    N_key = int(sys.argv[1])
+    l = int(sys.argv[2])
+    a = float(sys.argv[3])
+    b = float(sys.argv[4])
+    p = float(sys.argv[5])
+    inputs = None
+    with open(sys.argv[6], "r") as file:
+        inputs = eval(file.read())
+
+    run_ldp = PCKV_GRR(inputs, N_key, l, a, b, p)
+    sample_data, perturb_data = run_ldp.run()
+
+    data = {
+        "sample_list": sample_data,
+        "perturb_list": perturb_data
+    }
+    print(data)`;
+    formData.epsilon.content = 4
+    formData.whole_n.content = 10000
   } else if (selectDiv === "ab_setDiv" && alg === "PrivSet") {
     formData.set_size_domain.content = 4
     formData.set_domain.content = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50"
@@ -548,8 +751,10 @@ if __name__ == '__main__':
     set_size = int(sys.argv[2])
     epsilon = float(sys.argv[3])
     k = int(sys.argv[4])
-    inputs = eval(sys.argv[5])
-    domain = eval(sys.argv[6])
+    domain = eval(sys.argv[5])
+    inputs = None
+    with open(sys.argv[6], "r") as file:
+        inputs = eval(file.read())
     run_ldp = PrivSet(d, set_size, epsilon, k, inputs, domain)
     encode_data, perturb_data = run_ldp.run()
 
@@ -559,7 +764,7 @@ if __name__ == '__main__':
     }
     print(data)`;
     formData.epsilon.content = 4
-    formData.whole_n.content = 1000
+    formData.whole_n.content = 10000
   } else if (alg === 'Wheel') {
     formData.set_size_domain.content = 4
     formData.set_domain.content = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50"
@@ -673,8 +878,10 @@ if __name__ == '__main__':
 
     epsilon = float(sys.argv[1])
     p = float(sys.argv[2])
-    inputs = eval(sys.argv[3])
-    set_size = int(sys.argv[4])
+    set_size = int(sys.argv[3])
+    inputs = None
+    with open(sys.argv[4], "r") as file:
+        inputs = eval(file.read())
     run_ldp = Wheel(epsilon, p, inputs, set_size)
     encode_data, perturb_data = run_ldp.run()
 
@@ -685,7 +892,7 @@ if __name__ == '__main__':
     print(data)
 `
     formData.epsilon.content = 2
-    formData.whole_n.content = 1000
+    formData.whole_n.content = 10000
   }
 }
 

@@ -355,7 +355,7 @@
               <div v-if="showField('privKVM_format')" id="privKVM_format" class="mb-2">
                 <div class="d-flex align-items-center">
                   <label for="privKVM_format_input" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">PrivKVM算法输入参数格式：<span>输入数据, 键的数量, 迭代次数, 隐私预算</span></label>
+                    style="white-space: nowrap">PrivKVM算法输入参数格式：<span>键的数量, 迭代次数, 隐私预算, 输入数据</span></label>
                 </div>
                 <div class="d-flex align-items-center">
                   <label for="privKVM_format_output" class="form-label text-muted mb-2"
@@ -375,15 +375,15 @@
               <div v-if="showField('pckvUE_format')" id="pckvUE_format" class="mb-2">
                 <div class="d-flex align-items-center">
                   <label for="pckvUE_format_input" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">PCKV-UE算法输入参数格式：<span>隐私预算, 输入域, 数据, 测试输入数量</span></label>
+                    style="white-space: nowrap">PCKV-UE算法输入参数格式：<span>键域大小, 填充长度, 键1离散概率, 键0离散概率, 值的扰动概率, 输入数据</span></label>
                 </div>
                 <div class="d-flex align-items-center">
                   <label for="pckvUE_format_output" class="form-label text-muted mb-2"
                     style="white-space: nowrap">PCKV-UE算法输出格式：<span>
                       <pre>
                   {
-                  // 编码值列表
-                  "encode_list": [...],
+                  // 抽样值列表
+                  "sample_list": [...],
                   // 扰动值列表
                   "perturb_list": [...]
                   }</pre>
@@ -392,17 +392,17 @@
               </div>
 
               <!-- pckvRR 算法输入输出参数格式 -->
-              <div v-if="showField('pckvRR_format')" id="pckvRR_format" class="mb-2">
+              <div v-if="showField('pckvGRR_format')" id="pckvGRR_format" class="mb-2">
                 <div class="d-flex align-items-center">
-                  <label for="pckvRR_format_input" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">PCKV-RR算法输入参数格式：<span>隐私预算, 输入域, 数据, 测试输入数量</span></label>
+                  <label for="pckvGRR_format_input" class="form-label text-muted mb-2"
+                    style="white-space: nowrap">PCKV-GRR算法输入参数格式：<span>键域大小, 填充长度, 键1离散概率, 键0离散概率, 值的扰动概率, 输入数据</span></label>
                 </div>
                 <div class="d-flex align-items-center">
-                  <label for="pckvRR_format_output" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">PCKV-RR算法输出格式：<span>
+                  <label for="pckvGRR_format_output" class="form-label text-muted mb-2"
+                    style="white-space: nowrap">PCKV-GRR算法输出格式：<span>
                       <pre>
                   {
-                  // 编码值列表
+                  // 抽样值列表
                   "encode_list": [...],
                   // 扰动值列表
                   "perturb_list": [...]
@@ -640,7 +640,7 @@ const submitForm = async () => {
       if (processingPercentage.value < 90) {
         processingPercentage.value += 10;
       }
-    }, 500);
+    }, 1000);
 
     const result = await submitFormData(props.formData);
 
@@ -657,7 +657,7 @@ const submitForm = async () => {
     resultStore.setInputKindsN(result.input_kinds_n)
     resultStore.setInputs(result.inputs)
     resultStore.setOutputs(result.outputs)
-
+    console.log("这里的reuslt", result)
     // 短暂延迟后关闭模态框并跳转
     setTimeout(() => {
       isProcessing.value = false;

@@ -131,10 +131,17 @@ const outputsCurrentPage = ref(1);
 
 const showDetailedData = ref(false);
 
+
 const inputColumns = computed(() => {
   if (inputs.value.length === 0) return ['index'];
   const firstInput = inputs.value[0];
   if (Array.isArray(firstInput)) {
+    if (firstInput.length < input_kinds_n.value) {
+      // 使表格显示完全
+      for (let i = firstInput.length; i < input_kinds_n.value; i++) {
+        firstInput.push(null); // 或者使用其他默认值
+      }
+    }
     return ['index', ...firstInput.map((_, idx) => `value_${idx + 1}`)];
   } else {
     return ['index', 'value_1'];
@@ -145,6 +152,7 @@ const outputColumns = computed(() => {
   if (outputs.value.length === 0) return ['index'];
   const firstOutput = outputs.value[0];
   if (Array.isArray(firstOutput)) {
+
     return ['index', ...firstOutput.map((_, idx) => `value_${idx + 1}`)];
   } else {
     return ['index', 'value_1'];
