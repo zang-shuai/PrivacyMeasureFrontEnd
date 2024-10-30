@@ -131,6 +131,10 @@ const currentPage1 = ref(1);
 const currentPage2 = ref(1);
 const pageSize = 10;
 
+// 添加文件存储变量
+const file1 = ref(null);
+const file2 = ref(null);
+
 const isProcessing = ref(false);
 const processingPercentage = ref(0);
 const processingMessage = ref('正在提交数据...');
@@ -164,6 +168,7 @@ const handleFile = (file, outputId) => {
     const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
     if (outputId === 'output1') {
+      file1.value = file.raw;  // 保存文件对象
       tableColumns1.value = jsonData[0];
       tableData1.value = jsonData.slice(1).map(row => {
         const rowData = {};
@@ -178,6 +183,7 @@ const handleFile = (file, outputId) => {
       formData.index = [...tableColumns1.value];
       // formData.others = [...tableColumns1.value];
     } else {
+      file2.value = file.raw;  // 保存文件对象
       tableColumns2.value = jsonData[0];
       tableData2.value = jsonData.slice(1).map(row => {
         const rowData = {};
@@ -192,12 +198,28 @@ const handleFile = (file, outputId) => {
 };
 
 const submitForm = async (formId, url) => {
-
-  console.log("debug 232323 ", formData)
+  if (!file1.value && !file2.value) {
+    ElMessage.error('请先上传两个文件');
+    return;
+  }
+  // console.log("debug 232323 ", formData)
   try {
     isProcessing.value = true;
     processingPercentage.value = 0;
     processingMessage.value = '正在提交数据...';
+
+    // 创建 FormData 对象
+    const formDataToSend = new FormData();
+    
+    // 添加文件
+    formDataToSend.append('originFile', file1.value);
+    formDataToSend.append('handledFile', file2.value);
+    
+    // 添加其他表单数据
+    formDataToSend.append('prv', JSON.stringify(formData.prv));
+    formDataToSend.append('pub', JSON.stringify(formData.pub));
+    formDataToSend.append('index', JSON.stringify(formData.index));
+    formDataToSend.append('alg', formData.alg);
 
     // 模拟进度更新
     const progressInterval = setInterval(() => {
@@ -207,11 +229,8 @@ const submitForm = async (formId, url) => {
     }, 500);
 
     const response = await fetch(base_url + url, {
-      headers: {
-        'Content-Type': 'application/json', // 设置请求头为 JSON
-      },
       method: 'POST',
-      body: JSON.stringify(formData),
+      body: formDataToSend,
     });
 
     clearInterval(progressInterval);
