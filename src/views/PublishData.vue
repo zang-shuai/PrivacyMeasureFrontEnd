@@ -25,10 +25,10 @@
 
         <el-card class="mb-4">
           <el-form-item label="标识符列">
-          <el-select v-model="formData.index" multiple placeholder="请选择标识符列">
-            <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
-          </el-select>
-        </el-form-item>
+            <el-select v-model="formData.index" multiple placeholder="请选择标识符列">
+              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
+            </el-select>
+          </el-form-item>
 
           <el-form-item label="隐私列">
             <el-select v-model="formData.prv" multiple placeholder="请选择隐私列">
@@ -257,10 +257,29 @@ const submitForm = async (formId, url) => {
     processingPercentage.value = 100;
     processingMessage.value = '处理完成!';
 
+    const transformData = {
+      ...data,
+      others: {
+        prv: processedPrv,
+        pub: processedPub,
+        index: processedIndex,
+      }
+    }
+
+    //   const transformData = {
+    //   'message': 'fail',
+    //   'data': 'dfsaognoabgoaiho',
+    //   'others': {
+    //     'index': ['ZIP Code', 'Age'],
+    //     'pub': ['Salary'],
+    //     'prv': ['Disease']
+    //   }
+    // }
+
     // 短暂延迟后关闭模态框并跳转
     setTimeout(() => {
       isProcessing.value = false;
-      router.push({ path: '/publishDataResult', query: data });
+      router.push({ path: '/publishDataResult', state: transformData });
     }, 1000);
 
   } catch (error) {
