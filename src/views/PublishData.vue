@@ -24,29 +24,23 @@
         </el-card>
 
         <el-card class="mb-4">
+          <el-form-item label="标识符列">
+          <el-select v-model="formData.index" multiple placeholder="请选择标识符列">
+            <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
+          </el-select>
+        </el-form-item>
+
           <el-form-item label="隐私列">
             <el-select v-model="formData.prv" multiple placeholder="请选择隐私列">
-              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
+              <el-option v-for="col in availableColumns" :key="col" :label="col" :value="col" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="准标识符列">
             <el-select v-model="formData.pub" multiple placeholder="请选择准标识符列">
-              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
+              <el-option v-for="col in availableColumns" :key="col" :label="col" :value="col" />
             </el-select>
           </el-form-item>
-
-          <el-form-item label="标识符列">
-            <el-select v-model="formData.index" multiple placeholder="请选择标识符列">
-              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
-            </el-select>
-          </el-form-item>
-
-          <!-- <el-form-item label="其他">
-            <el-select v-model="formData.others" multiple placeholder="请选择其他列">
-              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
-            </el-select>
-          </el-form-item> -->
         </el-card>
 
         <el-card class="mb-4">
@@ -56,6 +50,7 @@
               <el-radio value="l">l-多样性</el-radio>
               <el-radio value="t">t-closeness</el-radio>
               <el-radio value="dp">差分隐私</el-radio>
+              <el-radio value="null">无</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-card>
@@ -118,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { ElMessage, ElDialog, ElProgress } from 'element-plus';
 import * as XLSX from 'xlsx';
 import router from '@/router';
@@ -127,6 +122,11 @@ const tableData1 = ref([]);
 const tableData2 = ref([]);
 const tableColumns1 = ref([]);
 const tableColumns2 = ref([]);
+
+const availableColumns = computed(() => {
+  return tableColumns1.value.filter(col => !formData.index.includes(col));
+});
+
 const currentPage1 = ref(1);
 const currentPage2 = ref(1);
 const pageSize = 10;
@@ -146,10 +146,17 @@ const formData = reactive({
   pub: [],
   index: [],
   // others: [],
-  alg: ''
+  alg: 'null'
 });
 
 const base_url = 'http://localhost:8000/api/';
+
+// 监听标识符列的变化
+watch(() => formData.index, (newVal) => {
+  // 从隐私列和准标识符列中移除已选为标识符的列
+  formData.prv = formData.prv.filter(col => !newVal.includes(col));
+  formData.pub = formData.pub.filter(col => !newVal.includes(col));
+}, { deep: true });
 
 const handleCurrentChange1 = (val) => {
   currentPage1.value = val;
@@ -210,15 +217,20 @@ const submitForm = async (formId, url) => {
 
     // 创建 FormData 对象
     const formDataToSend = new FormData();
-    
+
     // 添加文件
     formDataToSend.append('originFile', file1.value);
     formDataToSend.append('handledFile', file2.value);
-    
+
     // 添加其他表单数据
-    formDataToSend.append('prv', JSON.stringify(formData.prv));
-    formDataToSend.append('pub', JSON.stringify(formData.pub));
-    formDataToSend.append('index', JSON.stringify(formData.index));
+    // 检查空列表，如果为空则使用默认值 ['index']
+    const processedPrv = formData.prv.length === 0 ? ['index'] : formData.prv;
+    const processedPub = formData.pub.length === 0 ? ['index'] : formData.pub;
+    const processedIndex = formData.index.length === 0 ? ['index'] : formData.index;
+
+    formDataToSend.append('prv', JSON.stringify(processedPrv));
+    formDataToSend.append('pub', JSON.stringify(processedPub));
+    formDataToSend.append('index', JSON.stringify(processedIndex));
     formDataToSend.append('alg', formData.alg);
 
     // 模拟进度更新
