@@ -680,15 +680,15 @@ const handleFileChange = (file) => {
 const inputTypeOptions = [
   { value: 'single_discrete_input', label: '单个离散' },
   { value: 'single_continuous_input', label: '单个连续' },
-  { value: 'discrete_set_input', label: '离散集合' },
-  { value: 'key_value_input', label: '键-值' }
+  // { value: 'discrete_set_input', label: '离散集合' },
+  // { value: 'key_value_input', label: '键-值' }
 ];
 
 const outputTypeOptions = [
   { value: 'single_discrete_output', label: '单个离散' },
   { value: 'single_continuous_output', label: '单个连续' },
-  { value: 'discrete_set_output', label: '离散集合' },
-  { value: 'key_value_output', label: '键-值' }
+  // { value: 'discrete_set_output', label: '离散集合' },
+  // { value: 'key_value_output', label: '键-值' }
 ];
 
 const callMethods = [

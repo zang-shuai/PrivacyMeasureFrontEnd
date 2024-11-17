@@ -14,11 +14,20 @@
               {{ getStatus(params.data?.PLS?.all) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="参数设置">
+          <el-descriptions-item label="参数设置" v-show="params.data?.PLS?.para!=='null'">
             {{ params.data?.PLS?.para }}
           </el-descriptions-item>
         </el-descriptions>
       </el-card>
+      <!--      <el-row :gutter="20" class="mb-4">-->
+      <!--        <el-col>-->
+      <el-card class="mb-4">
+        <div style="justify-content: center;">
+          <div class="echarts" ref="chart2Ref" style="width: 100%; height: 400px;"></div>
+        </div>
+      </el-card>
+      <!--        </el-col>-->
+      <!--      </el-row>-->
 
       <el-card class="mb-4">
         <template #header>
@@ -26,31 +35,31 @@
         </template>
 
         <el-descriptions :column="1" border>
-          <el-descriptions-item label="标识符列">
-            <div ref="entropyChartContainer" style="width: 100%; height: 400px;"></div>
-            <el-table :data="entropyTableData" stripe style="margin-top: 20px;">
-              <el-table-column prop="column" label="列名" />
-              <el-table-column prop="value" label="熵值">
-                <template #default="scope">
-                  <span :class="getRiskClass(scope.row.value)">{{ scope.row.value.toFixed(4) }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="plsValue" label="度量值">
-                <template #default="scope">
-                  <span :class="getRiskClass(scope.row.plsValue)">{{ scope.row.plsValue.toFixed(4) }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="status" label="状态">
-                <template #default="scope">
-                  <el-tag :type="getTagType(scope.row.value)">{{ getStatus(scope.row.value) }}</el-tag>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-descriptions-item>
+          <!--          <el-descriptions-item label="标识符列">
+                      <div ref="entropyChartContainer" style="width: 100%; height: 400px;"></div>
+                      <el-table :data="entropyTableData" stripe style="margin-top: 20px;">
+                        <el-table-column prop="column" label="列名"/>
+                        <el-table-column prop="value" label="熵值">
+                          <template #default="scope">
+                            <span :class="getRiskClass(scope.row.value)">{{ scope.row.value.toFixed(4) }}</span>
+                          </template>
+                        </el-table-column>
+                        <el-table-column prop="plsValue" label="度量值">
+                          <template #default="scope">
+                            <span :class="getRiskClass(scope.row.plsValue)">{{ scope.row.plsValue.toFixed(4) }}</span>
+                          </template>
+                        </el-table-column>
+                        <el-table-column prop="status" label="状态">
+                          <template #default="scope">
+                            <el-tag :type="getTagType(scope.row.value)">{{ getStatus(scope.row.value) }}</el-tag>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </el-descriptions-item>-->
           <el-descriptions-item label="准标识符列">
             <div ref="quasiChartContainer" style="width: 100%; height: 400px;"></div>
             <el-table :data="quasiTableData" stripe style="margin-top: 20px;">
-              <el-table-column prop="column" label="列名" />
+              <el-table-column prop="column" label="列名"/>
               <el-table-column prop="value" label="熵值">
                 <template #default="scope">
                   <span :class="getRiskClass(scope.row.value)">{{ scope.row.value.toFixed(4) }}</span>
@@ -71,7 +80,7 @@
           <el-descriptions-item label="隐私列">
             <div ref="privacyChartContainer" style="width: 100%; height: 400px;"></div>
             <el-table :data="privacyTableData" stripe style="margin-top: 20px;">
-              <el-table-column prop="column" label="列名" />
+              <el-table-column prop="column" label="列名"/>
               <el-table-column prop="value" label="熵值">
                 <template #default="scope">
                   <span :class="getRiskClass(scope.row.value)">{{ scope.row.value.toFixed(4) }}</span>
@@ -110,7 +119,7 @@
             </div>
           </div>
           <el-table :data="plsTableData" stripe style="margin-top: 20px;">
-            <el-table-column prop="column" label="列名" />
+            <el-table-column prop="column" label="列名"/>
             <el-table-column prop="value" label="PLS值">
               <template #default="scope">
                 <span :class="getRiskClass(scope.row.value)">{{ scope.row.value.toFixed(4) }}</span>
@@ -131,10 +140,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref, onMounted, computed, onUnmounted} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
 import * as echarts from 'echarts';
-import { ElMessage } from 'element-plus';
+import {ElMessage} from 'element-plus';
 
 const router = useRouter();
 const params = ref({});
@@ -179,39 +188,39 @@ const plsTableData = computed(() => {
 });
 
 const quasiTableData = computed(() => {
-  if (!params.value?.data?.entropys) return [];
-  return Object.entries(params.value.data.entropys)
-    .filter(([column]) => params.value.others.pub?.includes(column))
-    .map(([column, value]) => ({
-      column,
-      value,
-      plsValue: params.value.data.PLS[column],
-      status: getStatus(value)
-    }));
+  if (!params.value?.data?.PLS) return [];
+  return Object.entries(params.value.data.PLS)
+      .filter(([column]) => params.value.others.pub?.includes(column))
+      .map(([column, value]) => ({
+        column,
+        value,
+        plsValue: params.value.data.PLS[column],
+        status: getStatus(value)
+      }));
 });
 
 const privacyTableData = computed(() => {
-  if (!params.value?.data?.entropys) return [];
-  return Object.entries(params.value.data.entropys)
-    .filter(([column]) => params.value.others.prv?.includes(column))
-    .map(([column, value]) => ({
-      column,
-      value,
-      plsValue: params.value.data.PLS[column],
-      status: getStatus(value)
-    }));
+  if (!params.value?.data?.PLS) return [];
+  return Object.entries(params.value.data.PLS)
+      .filter(([column]) => params.value.others.prv?.includes(column))
+      .map(([column, value]) => ({
+        column,
+        value,
+        plsValue: params.value.data.PLS[column],
+        status: getStatus(value)
+      }));
 });
 
 const entropyTableData = computed(() => {
-  if (!params.value?.data?.entropys) return [];
-  return Object.entries(params.value.data.entropys)
-    .filter(([column]) => params.value.others.index?.includes(column))
-    .map(([column, value]) => ({
-      column,
-      value,
-      plsValue: params.value.data.PLS[column],
-      status: getStatus(value)
-    }));
+  if (!params.value?.data?.PLS) return [];
+  return Object.entries(params.value.data.PLS)
+      .filter(([column]) => params.value.others.index?.includes(column))
+      .map(([column, value]) => ({
+        column,
+        value,
+        plsValue: params.value.data.PLS[column],
+        status: getStatus(value)
+      }));
 });
 
 
@@ -232,7 +241,6 @@ const getRiskClass = (value) => {
   if (value <= 0.6666) return 'text-warning';
   return 'text-danger';
 };
-
 
 
 const entropyChartContainer = ref(null);
@@ -273,7 +281,7 @@ const initChart = () => {
           value: item.value,
           itemStyle: {
             color: item.value <= 0.3333 ? '#67C23A' :
-              item.value <= 0.6666 ? '#E6A23C' : '#F56C6C'
+                item.value <= 0.6666 ? '#E6A23C' : '#F56C6C'
           }
         })),
         type: 'bar',
@@ -337,7 +345,7 @@ const initCharts = () => {
           value: item.value,
           itemStyle: {
             color: item.value <= 0.3333 ? '#67C23A' :
-              item.value <= 0.6666 ? '#E6A23C' : '#F56C6C'
+                item.value <= 0.6666 ? '#E6A23C' : '#F56C6C'
           }
         })),
         type: 'bar',
@@ -354,35 +362,35 @@ const initCharts = () => {
   };
 
   // 初始化标识符列图表
-  if (params.value?.data?.entropys && entropyChartContainer.value) {
-    const data = Object.entries(params.value.data.entropys)
-      .filter(([column]) => params.value.others.index?.includes(column))
-      .map(([name, value]) => ({
-        name,
-        value: Number(value.toFixed(4))
-      }));
+  if (params.value?.data?.PLS && entropyChartContainer.value) {
+    const data = Object.entries(params.value.data.PLS)
+        .filter(([column]) => params.value.others.index?.includes(column))
+        .map(([name, value]) => ({
+          name,
+          value: Number(value.toFixed(4))
+        }));
     entropyChart = createEntropyChart(entropyChartContainer.value, data);
   }
 
   // 初始化准标识符列图表
-  if (params.value?.data?.entropys && quasiChartContainer.value) {
-    const data = Object.entries(params.value.data.entropys)
-      .filter(([column]) => params.value.others.pub?.includes(column))
-      .map(([name, value]) => ({
-        name,
-        value: Number(value.toFixed(4))
-      }));
+  if (params.value?.data?.PLS && quasiChartContainer.value) {
+    const data = Object.entries(params.value.data.PLS)
+        .filter(([column]) => params.value.others.pub?.includes(column))
+        .map(([name, value]) => ({
+          name,
+          value: Number(value.toFixed(4))
+        }));
     quasiChart = createEntropyChart(quasiChartContainer.value, data);
   }
 
   // 初始化隐私列图表
-  if (params.value?.data?.entropys && privacyChartContainer.value) {
-    const data = Object.entries(params.value.data.entropys)
-      .filter(([column]) => params.value.others.prv?.includes(column))
-      .map(([name, value]) => ({
-        name,
-        value: Number(value.toFixed(4))
-      }));
+  if (params.value?.data?.PLS && privacyChartContainer.value) {
+    const data = Object.entries(params.value.data.PLS)
+        .filter(([column]) => params.value.others.prv?.includes(column))
+        .map(([name, value]) => ({
+          name,
+          value: Number(value.toFixed(4))
+        }));
     privacyChart = createEntropyChart(privacyChartContainer.value, data);
   }
 };
@@ -391,17 +399,58 @@ const goBack = () => {
   router.push('/publishData');
 };
 
-onMounted(() => {
-  params.value = window.history.state;
 
+const option2 = ref({
+  tooltip: {
+    formatter: "{a} <br/>{b} : {c}%",
+  },
+  series: [
+    {
+      name: "Pressure",
+      type: "gauge",
+      progress: {
+        show: true,
+      },
+      detail: {
+        valueAnimation: true,
+        formatter: "{value}",
+      },
+
+      axisLine: {
+        lineStyle: {
+          // width: 30,'#E6A23C' : '#F56C6C'
+          color: [[0.33, '#67C23A'], [0.66, '#E6A23C'], [1, '#F56C6C']]
+        }
+      },
+      min: 0, // 最小刻度
+      max: 1, // 最大刻度
+      data: [
+        {
+          // value: parseFloat(params.data?.PLS?.all.toFixed(2)),
+          // value: params.data?.PLS?.all,
+          value: 0.5,
+          name: "SCORE",
+        },
+      ],
+    },
+  ],
+});
+
+let chart2;
+let chart2Ref = ref(null);
+
+
+onMounted(() => {
+  const route = useRoute();
+  console.log(route.query);
+  params.value = JSON.parse(decodeURIComponent(route.query.data));
+  console.log(params.value);
   if (params.value.message === 'fail') {
     // 展示错误信息
     ElMessage.error(params.value.data);
     return;
   }
-
   initCharts();
-
   window.addEventListener('resize', () => {
     if (chart) {
       chart.resize();
@@ -410,6 +459,10 @@ onMounted(() => {
       entropyChart.resize();
     }
   });
+
+
+  chart2 = echarts.init(chart2Ref.value)
+  chart2.setOption(option2.value)
 });
 
 onUnmounted(() => {

@@ -11,7 +11,7 @@
             <span>数值型</span>
           </template>
           <el-menu-item v-for="algo in numericalAlgorithms" :key="algo.name" :index="algo.name"
-            @click="selectForm('ab_numericalDiv', algo.name)">
+                        @click="selectForm('ab_numericalDiv', algo.name)">
             {{ algo.name }}
           </el-menu-item>
         </el-sub-menu>
@@ -21,7 +21,7 @@
             <span>类别型</span>
           </template>
           <el-menu-item v-for="algo in discreteAlgorithms" :key="algo.name" :index="algo.name"
-            @click="selectForm('ab_discreteDiv', algo.name)">
+                        @click="selectForm('ab_discreteDiv', algo.name)">
             {{ algo.name }}
           </el-menu-item>
         </el-sub-menu>
@@ -31,7 +31,7 @@
             <span>key-value型</span>
           </template>
           <el-menu-item v-for="algo in keyValueAlgorithms" :key="algo.name" :index="algo.name"
-            @click="selectForm('ab_key_valueDiv', algo.name)">
+                        @click="selectForm('ab_key_valueDiv', algo.name)">
             {{ algo.name }}
           </el-menu-item>
         </el-sub-menu>
@@ -41,13 +41,15 @@
             <span>集合型</span>
           </template>
           <el-menu-item v-for="algo in setAlgorithms" :key="algo.name" :index="algo.name"
-            @click="selectForm('ab_setDiv', algo.name)">
+                        @click="selectForm('ab_setDiv', algo.name)">
             {{ algo.name }}
           </el-menu-item>
         </el-sub-menu>
 
         <el-menu-item index="6">
-          <router-link to="/publishData" class="publish-link">发布数据</router-link>
+          <router-link to="/publishData" class="publish-link" style="display: block; width: 100%; height: 100%;">
+            发布数据
+          </router-link>
         </el-menu-item>
       </el-menu>
     </el-scrollbar>
@@ -55,9 +57,9 @@
 </template>
 
 <script setup>
-import { defineEmits } from 'vue';
-import { ref } from 'vue';
-import { ElMenu, ElMenuItem, ElSubMenu } from 'element-plus';
+import {defineEmits} from 'vue';
+import {ref} from 'vue';
+import {ElMenu, ElMenuItem, ElSubMenu} from 'element-plus';
 
 const emit = defineEmits(['select-form']);
 
@@ -76,33 +78,33 @@ const handleClose = (key, keyPath) => {
 };
 
 const numericalAlgorithms = [
-  { name: 'Duchi' },
-  { name: 'PM' },
-  { name: 'Laplace' }
+  {name: 'Duchi'},
+  {name: 'PM'},
+  {name: 'Laplace'}
 ];
 
 const discreteAlgorithms = [
-  { name: 'RR' },
-  { name: 'SUE' },
-  { name: 'OUE' },
-  { name: 'BLH' },
-  { name: 'OLH' },
-  { name: 'HE' },
-  { name: 'k-Subset' }
+  {name: 'RR'},
+  {name: 'SUE'},
+  {name: 'OUE'},
+  {name: 'BLH'},
+  {name: 'OLH'},
+  {name: 'HE'},
+  // { name: 'k-Subset' }
 ];
 
 const keyValueAlgorithms = [
-  { name: 'PrivKVM' },
-  { name: 'PCKV-UE' },
-  { name: 'PCKV-GRR' }
+  {name: 'PrivKVM'},
+  {name: 'PCKV-UE'},
+  {name: 'PCKV-GRR'}
 ];
 
 const setAlgorithms = [
-  { name: 'd-PAPPOR' },
+  // { name: 'd-PAPPOR' },
   // { name: 'OLHSampling' },
   // { name: 'OUESampling' },
-  { name: 'PrivSet' },
-  { name: 'Wheel' },
+  {name: 'PrivSet'},
+  {name: 'Wheel'},
   // { name: 'LdpMinner' }
 ];
 </script>

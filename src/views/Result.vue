@@ -19,7 +19,15 @@
           </el-card>
         </el-col>
       </el-row>
-
+      <el-row :gutter="20" class="mb-4">
+        <el-col>
+          <el-card>
+            <div style="justify-content: center;">
+              <div class="echarts" ref="chartRef" style="width: 100%; height: 400px;"></div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
       <el-row :gutter="20" class="mb-4">
         <el-col :span="12">
           <el-card>
@@ -40,32 +48,32 @@
       </el-row>
 
       <el-card class="mb-4">
-<!--        <template #header>-->
-<!--          <div class="card-header">-->
-<!--            <h2>详细数据</h2>-->
-<!--            <el-button type="primary" @click="fetchDetailedData">获取详细数据</el-button>-->
-<!--          </div>-->
-<!--        </template>-->
+        <!--        <template #header>-->
+        <!--          <div class="card-header">-->
+        <!--            <h2>详细数据</h2>-->
+        <!--            <el-button type="primary" @click="fetchDetailedData">获取详细数据</el-button>-->
+        <!--          </div>-->
+        <!--        </template>-->
 
         <el-collapse v-if="(inputs.length > 0 || outputs.length > 0)">
           <el-collapse-item title="Inputs" name="1">
             <el-table :data="paginatedInputs" border style="width: 100%">
               <el-table-column v-for="(col, index) in inputColumns" :prop="col" :key="index"
-                :label="col"></el-table-column>
+                               :label="col"></el-table-column>
             </el-table>
             <el-pagination v-if="inputs.length > pageSize" :current-page="inputsCurrentPage" :page-size="pageSize"
-              :total="inputs.length" @current-change="handleInputsPageChange" layout="prev, pager, next"
-              class="mt-4"></el-pagination>
+                           :total="inputs.length" @current-change="handleInputsPageChange" layout="prev, pager, next"
+                           class="mt-4"></el-pagination>
           </el-collapse-item>
 
           <el-collapse-item title="Outputs" name="2">
             <el-table :data="paginatedOutputs" border style="width: 100%">
               <el-table-column v-for="(col, index) in outputColumns" :prop="col" :key="index"
-                :label="col"></el-table-column>
+                               :label="col"></el-table-column>
             </el-table>
             <el-pagination v-if="outputs.length > pageSize" :current-page="outputsCurrentPage" :page-size="pageSize"
-              :total="outputs.length" @current-change="handleOutputsPageChange" layout="prev, pager, next"
-              class="mt-4"></el-pagination>
+                           :total="outputs.length" @current-change="handleOutputsPageChange" layout="prev, pager, next"
+                           class="mt-4"></el-pagination>
           </el-collapse-item>
         </el-collapse>
 
@@ -76,10 +84,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { ElMessage } from 'element-plus';
-import { useResultStore } from '@/stores/result';
+import {ref, onMounted, computed, onUnmounted} from 'vue';
+import {ElMessage} from 'element-plus';
+import {useResultStore} from '@/stores/result';
 import * as echarts from "echarts"
+
 
 const resultStore = useResultStore();
 const inputs = computed(() => resultStore.inputs);
@@ -152,7 +161,6 @@ const outputColumns = computed(() => {
   if (outputs.value.length === 0) return ['index'];
   const firstOutput = outputs.value[0];
   if (Array.isArray(firstOutput)) {
-
     return ['index', ...firstOutput.map((_, idx) => `value_${idx + 1}`)];
   } else {
     return ['index', 'value_1'];
@@ -185,42 +193,40 @@ const realPrivacyBudget = computed(() => resultStore.epsilon);
 const estimatedPrivacyBudget = computed(() => resultStore.result);
 
 const displayedEstimatedBudget = ref(0);
+const option = ref({
+  tooltip: {
+    formatter: "{a} <br/>{b} : {c}%",
+  },
+  series: [
+    {
+      name: "Pressure",
+      type: "gauge",
+      progress: {
+        show: true,
+      },
+      detail: {
+        valueAnimation: true,
+        formatter: "{value}",
+      },
+      min: 0, // 最小刻度
+      max: 10, // 最大刻度
+      data: [
+        {
+          value: parseFloat(estimatedPrivacyBudget.value.toFixed(2)),
+          name: "SCORE",
+        },
+      ],
+    },
+  ],
+});
 
-// const fetchDetailedData = () => {
-//   // 从后端获取数据
-//   const data = { id: resultStore.params['id'] };
-//
-//   fetch(base_url + 'ldp_result', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(data)
-//   })
-//     .then(response => response.json())
-//     .then(data => {
-//       console.log('Success:', data);
-//       resultStore.setInputs(data.inputs);
-//       resultStore.setOutputs(data.outputs);
-//       showDetailedData.value = true;
-//       ElMessage.success('详细数据获取成功');
-//     })
-//     .catch((error) => {
-//       console.error('Error:', error);
-//       ElMessage.error('获取详细数据失败，请重试');
-//     });
-//
-//   // 直接从 Pinia 存储中获取数据
-//   // if (inputs.value.length > 0 || outputs.value.length > 0) {
-//   //   showDetailedData.value = true;
-//   //   ElMessage.success('详细数据获取成功');
-//   // } else {
-//   //   ElMessage.warning('暂无详细数据');
-//   // }
-// };
+let chart;
+let chartRef = ref(null);
 
 onMounted(() => {
   animateEstimatedBudget();
+  chart = echarts.init(chartRef.value)
+  chart.setOption(option.value)
 });
 
 const animateEstimatedBudget = () => {
