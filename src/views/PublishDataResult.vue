@@ -400,41 +400,6 @@ const goBack = () => {
 };
 
 
-const option2 = ref({
-  tooltip: {
-    formatter: "{a} <br/>{b} : {c}%",
-  },
-  series: [
-    {
-      name: "Pressure",
-      type: "gauge",
-      progress: {
-        show: true,
-      },
-      detail: {
-        valueAnimation: true,
-        formatter: "{value}",
-      },
-
-      axisLine: {
-        lineStyle: {
-          // width: 30,'#E6A23C' : '#F56C6C'
-          color: [[0.33, '#67C23A'], [0.66, '#E6A23C'], [1, '#F56C6C']]
-        }
-      },
-      min: 0, // 最小刻度
-      max: 1, // 最大刻度
-      data: [
-        {
-          // value: parseFloat(params.data?.PLS?.all.toFixed(2)),
-          // value: params.data?.PLS?.all,
-          value: 0.5,
-          name: "SCORE",
-        },
-      ],
-    },
-  ],
-});
 
 let chart2;
 let chart2Ref = ref(null);
@@ -462,7 +427,49 @@ onMounted(() => {
 
 
   chart2 = echarts.init(chart2Ref.value)
-  chart2.setOption(option2.value)
+  const option2 = {
+  tooltip: {
+    formatter: "{a} <br/>{b} : {c}%",
+  },
+  series: [
+    {
+      name: "Pressure",
+      type: "gauge",
+      progress: {
+        show: true,
+      },
+      detail: {
+        valueAnimation: true,
+        formatter: "{value}",
+      },
+
+      axisLine: {
+        lineStyle: {
+          // width: 30,'#E6A23C' : '#F56C6C'
+          color: [[0.33, '#67C23A'], [0.66, '#E6A23C'], [1, '#F56C6C']]
+        }
+      },
+      min: 0, // 最小刻度
+      max: 1, // 最大刻度
+      data: [
+        {
+          value: parseFloat(params.value.data.PLS.all.toFixed(2)),
+          // value: params.value.data.PLS.all,
+          // value: 0.5,
+          // value: 0.5,
+          name: "SCORE",
+        },
+      ],
+    },
+  ],
+};
+
+  chart2.setOption(option2);
+  console.log("====================");
+  console.log("====================");
+  console.log("====================");
+  console.log(params.value);
+
 });
 
 onUnmounted(() => {

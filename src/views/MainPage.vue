@@ -105,11 +105,11 @@ const formDataOfAlg = {
     "privKVM_format", "epsilon", "whole_n"
   ],
   'PCKV-UE': [
-    "alg_name", "call_method", "alg_type",  "key_domain", "value_domain", "code_file",
+    "alg_name", "call_method", "alg_type", "key_domain", "value_domain", "code_file",
     "pckvUE_format", "epsilon", "whole_n"
   ],
   'PCKV-GRR': [
-    "alg_name", "call_method", "alg_type",  "key_domain", "value_domain", "code_file",
+    "alg_name", "call_method", "alg_type", "key_domain", "value_domain", "code_file",
     "pckvGRR_format", "epsilon", "whole_n"
   ],
   'd-PAPPOR': [
@@ -541,7 +541,7 @@ if __name__ == '__main__':
     print(data)`;
     formData.epsilon.content = 4
     formData.whole_n.content = 10000
-  }  else if (alg === "PCKV-GRR") {
+  } else if (alg === "PCKV-GRR") {
     formData.key_domain.content = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50"
     formData.code_file.content = `# -*- coding: utf-8 -*-
 import numpy as np
@@ -893,6 +893,16 @@ if __name__ == '__main__':
 `
     formData.epsilon.content = 2
     formData.whole_n.content = 10000
+  } else if (selectDiv === "ob_measureDiv") {
+    // formData.set_size_domain.content = 4
+    formData.discrete_domain.content = "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+    formData.continue_min_domain.content = 1
+    formData.input_type.content = 'single_discrete_input'
+    formData.output_type.content = 'single_discrete_output'
+    formData.continue_max_domain.content = 100
+    formData.code_file.content = await response.text()
+    formData.epsilon.content = 4
+    formData.once_n.content = 10000
   }
 }
 
