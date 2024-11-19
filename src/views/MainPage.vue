@@ -59,7 +59,7 @@ const formData = reactive({
 
 // 某个具体的算法能够展示的表单项配置：
 const formDataOfAlg = {
-  '黑盒': [
+  '第一类：未知数据采集算法': [
     "alg_name", "alg_type", "input_type", "output_type", "call_method",
     "code_file", "ob_format", "epsilon", "once_n"
   ],
@@ -146,9 +146,9 @@ const select2Properity = {
 
 
 // 第一类：未知数据采集算法
-// 第二类：数值型数据采集算法
-// 第三类：类别型数据采集算法
-// 第四类：集合型数据采集算法
+// 第二类：第二类：数值型数据采集算法数据采集算法
+// 第三类：第三类：类别型数据采集算法数据采集算法
+// 第四类：第四类：集合型数据采集算法数据采集算法
 // 第五类：kv 型数据采集算法
 
 // 第六类：未知数据发布算法

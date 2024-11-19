@@ -22,15 +22,14 @@
       <el-row :gutter="20" class="mb-4">
         <el-col>
           <el-card>
-            <div style="justify-content: center;">
-              <div class="echarts" ref="chartRef" style="width: 100%; height: 400px;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="echarts" ref="realChartRef" style="width: 48%; height: 400px;"></div>
+              <div class="echarts" ref="chartRef" style="width: 48%; height: 400px;"></div>
             </div>
             <div class="data-info">{{ result_message }}</div>
-
           </el-card>
         </el-col>
       </el-row>
-      <!--      <div v-show="Math.abs(realPrivacyBudget-displayedEstimatedBudget)>realPrivacyBudget/5">aaaa</div>-->
 
       <el-row :gutter="20" class="mb-4">
         <el-col :span="12">
@@ -63,21 +62,21 @@
           <el-collapse-item title="Inputs" name="1">
             <el-table :data="paginatedInputs" border style="width: 100%">
               <el-table-column v-for="(col, index) in inputColumns" :prop="col" :key="index"
-                               :label="col"></el-table-column>
+                :label="col"></el-table-column>
             </el-table>
             <el-pagination v-if="inputs.length > pageSize" :current-page="inputsCurrentPage" :page-size="pageSize"
-                           :total="inputs.length" @current-change="handleInputsPageChange" layout="prev, pager, next"
-                           class="mt-4"></el-pagination>
+              :total="inputs.length" @current-change="handleInputsPageChange" layout="prev, pager, next"
+              class="mt-4"></el-pagination>
           </el-collapse-item>
 
           <el-collapse-item title="Outputs" name="2">
             <el-table :data="paginatedOutputs" border style="width: 100%">
               <el-table-column v-for="(col, index) in outputColumns" :prop="col" :key="index"
-                               :label="col"></el-table-column>
+                :label="col"></el-table-column>
             </el-table>
             <el-pagination v-if="outputs.length > pageSize" :current-page="outputsCurrentPage" :page-size="pageSize"
-                           :total="outputs.length" @current-change="handleOutputsPageChange" layout="prev, pager, next"
-                           class="mt-4"></el-pagination>
+              :total="outputs.length" @current-change="handleOutputsPageChange" layout="prev, pager, next"
+              class="mt-4"></el-pagination>
           </el-collapse-item>
         </el-collapse>
 
@@ -88,9 +87,9 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed, onUnmounted} from 'vue';
-import {ElMessage} from 'element-plus';
-import {useResultStore} from '@/stores/result';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import { useResultStore } from '@/stores/result';
 import * as echarts from "echarts"
 
 const resultStore = useResultStore();
@@ -202,14 +201,16 @@ let result_message = computed(() => {
     return "度量值与预设值差距较小，测试结果可信";
   }
 });
+
 const displayedEstimatedBudget = ref(0);
+
 const option = ref({
   tooltip: {
     formatter: "{a} <br/>{b} : {c}%",
   },
   series: [
     {
-      name: "Pressure",
+      name: "度量隐私预算",
       type: "gauge",
       progress: {
         show: true,
@@ -219,15 +220,39 @@ const option = ref({
         formatter: "{value}",
       },
       min: 0, // 最小刻度
-      max: realPrivacyBudget.value*2, // 最大刻度
+      max: realPrivacyBudget.value * 2, // 最大刻度
       data: [
         {
           value: parseFloat(estimatedPrivacyBudget.value.toFixed(2)),
           name: "Epsilon",
         },
-        // {
-        //   value: realPrivacyBudget.value,
-        // },
+      ],
+    },
+  ],
+});
+
+const realOption = ref({
+  tooltip: {
+    formatter: "{a} <br/>{b} : {c}%",
+  },
+  series: [
+    {
+      name: "真实隐私预算",
+      type: "gauge",
+      progress: {
+        show: true,
+      },
+      detail: {
+        valueAnimation: true,
+        formatter: "{value}",
+      },
+      min: 0,
+      max: realPrivacyBudget.value*2,
+      data: [
+        {
+          value: realPrivacyBudget.value,
+          name: "真实值",
+        },
       ],
     },
   ],
@@ -236,12 +261,30 @@ const option = ref({
 let chart;
 let chartRef = ref(null);
 
+// 添加新的图表配置和初始化代码
+const realChartRef = ref(null);
+let realChart;
+
 onMounted(() => {
   animateEstimatedBudget();
-  chart = echarts.init(chartRef.value)
-  chart.setOption(option.value)
+  
+  // 初始化两个图表
+  realChart = echarts.init(realChartRef.value);
+  realChart.setOption(realOption.value);
+  
+  chart = echarts.init(chartRef.value);
+  chart.setOption(estimatedOption.value);
 });
 
+// 在 onUnmounted 中清理两个图表
+onUnmounted(() => {
+  if (chart) {
+    chart.dispose();
+  }
+  if (realChart) {
+    realChart.dispose();
+  }
+});
 const animateEstimatedBudget = () => {
   const duration = 2000; // 动画持续时间（毫秒）
   const steps = 60; // 动画步数
