@@ -7,11 +7,11 @@ from pure_ldp.core import FreqOracleClient
 
 
 class LHClient(FreqOracleClient):
-    def __init__(self, epsilon, d, g=2, use_olh=False, index_mapper=None):
+    def __init__(self, epsilon, d, g, use_olh=False, index_mapper=None):
         super().__init__(epsilon, d, index_mapper=index_mapper)
         self.use_olh = use_olh
         self.g = g
-        self.update_params(epsilon=epsilon, d=d, g=g, index_mapper=index_mapper)
+        self.update_params(epsilon=epsilon, d=d, use_olh=True, g=g, index_mapper=index_mapper)
 
     def update_params(self, epsilon=None, d=None, use_olh=None, g=None, index_mapper=None):
         super().update_params(epsilon, d, index_mapper)  # Updates core params
@@ -45,7 +45,8 @@ if __name__ == '__main__':
         inputs = eval(file.read())
     epsilon = float(sys.argv[1])
     domain = eval(sys.argv[2])
-    client = LHClient(epsilon, len(domain), 2, True, lambda x: domain.index(x))
+    # g = eval(sys.argv[4])
+    client = LHClient(epsilon, len(domain), None, True, lambda x: domain.index(x))
     encode_list = []
     perturb_list = []
     for x in inputs:

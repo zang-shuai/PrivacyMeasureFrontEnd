@@ -3,7 +3,7 @@
     <el-card class="algorithm-card">
       <template #header>
         <div class="card-header">
-          <h2 class="algorithm-title">{{ formData.alg_name.content }}</h2>
+          <h2 class="algorithm-title">{{ formData.alg_name.content==="ob_measure"?"未知算法":formData.alg_name.content }}</h2>
         </div>
       </template>
 
@@ -149,7 +149,7 @@
                     <!--                  "perturb_list": [...]-->
                     <!--                  }</pre>-->
                     <pre># 输出列表
-[,...,]</pre>
+[...,...,...]</pre>
                     </span></label>
                 </div>
               </div>
@@ -643,8 +643,11 @@ const submitForm = async () => {
 
   } catch (error) {
     console.error(error);
-    processingMessage.value = '处理出错,请重试';
+    processingMessage.value = '提交代码出错，请重试';
     // 这里可以添加更多错误处理逻辑
+    setTimeout(() => {
+      isProcessing.value = false;
+    }, 2000); // 延迟 3 秒后执行
   }
 };
 

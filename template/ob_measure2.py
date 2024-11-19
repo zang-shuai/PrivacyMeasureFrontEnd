@@ -49,12 +49,12 @@ if __name__ == '__main__':
     inputs = None
     with open(sys.argv[4], "r") as file:
         inputs = eval(file.read())
-
     pm = PiecewiseMechanism(epsilon, [min_value, max_value])
     privatise = []
     for v in inputs:
-        privatise.append(pm.privatise(v))
-    print({
-        "inputs": list(set(inputs)),
-        "outputs": privatise,
-    })
+        privatise.append([pm.privatise(v), ])
+    print(privatise)
+    # print({
+    #     "inputs": list(set(inputs)),
+    #     "outputs": privatise,
+    # })

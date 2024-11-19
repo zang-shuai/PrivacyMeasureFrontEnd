@@ -54,7 +54,3 @@ if __name__ == '__main__':
     for v in inputs:
         privatise.append([pm.privatise(v), ])
     print(privatise)
-    # print({
-    #     "inputs": list(set(inputs)),
-    #     "outputs": privatise,
-    # })

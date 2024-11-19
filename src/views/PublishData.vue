@@ -223,8 +223,6 @@ const submitForm = async (formId, url) => {
       processingPercentage.value = 0; // 初始化进度条为 0%
       processingMessage.value = '正在提交数据...'; // 显示提交消息
       console.log('正在提交数据...');
-      // console.log('file1:', file1.value);
-      // console.log('file1:', file1.value);
       if (file1.value.size > 156644) {
         processingMessage.value = '正在提交，数据量较大，请耐心等待，约需 ' + toString(file1.value.size / 40000 / 60) + ' 分钟'; // 显示提交消息
       }

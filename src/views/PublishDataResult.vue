@@ -24,38 +24,15 @@
       <el-card class="mb-4">
         <div style="justify-content: center;">
           <div class="echarts" ref="chart2Ref" style="width: 100%; height: 400px;"></div>
+          <div>{{result_message(params.data?.PLS?.all)}}</div>
         </div>
       </el-card>
-      <!--        </el-col>-->
-      <!--      </el-row>-->
-
       <el-card class="mb-4">
         <template #header>
           <h1>数据列分类结果</h1>
         </template>
 
         <el-descriptions :column="1" border>
-          <!--          <el-descriptions-item label="标识符列">
-                      <div ref="entropyChartContainer" style="width: 100%; height: 400px;"></div>
-                      <el-table :data="entropyTableData" stripe style="margin-top: 20px;">
-                        <el-table-column prop="column" label="列名"/>
-                        <el-table-column prop="value" label="熵值">
-                          <template #default="scope">
-                            <span :class="getRiskClass(scope.row.value)">{{ scope.row.value.toFixed(4) }}</span>
-                          </template>
-                        </el-table-column>
-                        <el-table-column prop="plsValue" label="度量值">
-                          <template #default="scope">
-                            <span :class="getRiskClass(scope.row.plsValue)">{{ scope.row.plsValue.toFixed(4) }}</span>
-                          </template>
-                        </el-table-column>
-                        <el-table-column prop="status" label="状态">
-                          <template #default="scope">
-                            <el-tag :type="getTagType(scope.row.value)">{{ getStatus(scope.row.value) }}</el-tag>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-descriptions-item>-->
           <el-descriptions-item label="准标识符列">
             <div ref="quasiChartContainer" style="width: 100%; height: 400px;"></div>
             <el-table :data="quasiTableData" stripe style="margin-top: 20px;">
@@ -242,6 +219,11 @@ const getRiskClass = (value) => {
   return 'text-danger';
 };
 
+let result_message = (value) => {
+  if (value <= 0.3333) return '数据匿名程度相对较高，请注意数据效用';
+  if (value <= 0.6666) return '数据匿名程度中等';
+  return '数据匿名程度较低，请注意隐私泄漏风险';
+};
 
 const entropyChartContainer = ref(null);
 let entropyChart = null;
@@ -400,7 +382,6 @@ const goBack = () => {
 };
 
 
-
 let chart2;
 let chart2Ref = ref(null);
 
@@ -428,41 +409,41 @@ onMounted(() => {
 
   chart2 = echarts.init(chart2Ref.value)
   const option2 = {
-  tooltip: {
-    formatter: "{a} <br/>{b} : {c}%",
-  },
-  series: [
-    {
-      name: "Pressure",
-      type: "gauge",
-      progress: {
-        show: true,
-      },
-      detail: {
-        valueAnimation: true,
-        formatter: "{value}",
-      },
-
-      axisLine: {
-        lineStyle: {
-          // width: 30,'#E6A23C' : '#F56C6C'
-          color: [[0.33, '#67C23A'], [0.66, '#E6A23C'], [1, '#F56C6C']]
-        }
-      },
-      min: 0, // 最小刻度
-      max: 1, // 最大刻度
-      data: [
-        {
-          value: parseFloat(params.value.data.PLS.all.toFixed(2)),
-          // value: params.value.data.PLS.all,
-          // value: 0.5,
-          // value: 0.5,
-          name: "SCORE",
-        },
-      ],
+    tooltip: {
+      formatter: "{a} <br/>{b} : {c}%",
     },
-  ],
-};
+    series: [
+      {
+        name: "Pressure",
+        type: "gauge",
+        progress: {
+          show: true,
+        },
+        detail: {
+          valueAnimation: true,
+          formatter: "{value}",
+        },
+
+        axisLine: {
+          lineStyle: {
+            // width: 30,'#E6A23C' : '#F56C6C'
+            color: [[0.33, '#67C23A'], [0.66, '#E6A23C'], [1, '#F56C6C']]
+          }
+        },
+        min: 0, // 最小刻度
+        max: 1, // 最大刻度
+        data: [
+          {
+            value: parseFloat(params.value.data.PLS.all.toFixed(2)),
+            // value: params.value.data.PLS.all,
+            // value: 0.5,
+            // value: 0.5,
+            name: "SCORE",
+          },
+        ],
+      },
+    ],
+  };
 
   chart2.setOption(option2);
   console.log("====================");

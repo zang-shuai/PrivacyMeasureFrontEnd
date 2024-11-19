@@ -3,7 +3,7 @@
     <el-scrollbar>
       <el-menu class="sidebar-menu" default-active="1" :collapse="isCollapse" @open="handleOpen" @close="handleClose">
         <el-menu-item index="1" @click="selectForm('ob_measureDiv', 'ob_measure')">
-          <span>黑盒</span>
+          <span>未知算法</span>
         </el-menu-item>
 
         <el-sub-menu index="2">

@@ -1,60 +1,44 @@
-import numpy as np
+# -*- coding: utf-8 -*-
+from pure_ldp.core import FreqOracleClient
+import math
 import random
 
 
-class PiecewiseMechanism(object):
-    def __init__(self, epsilon, domain):
-        self.epsilon = epsilon
-        self.domain = domain
-        self.a = domain[0]
-        self.b = domain[1]
-        self.d = np.arange(self.a, self.b, 0.1)
+class DEClient(FreqOracleClient):
+    def __init__(self, epsilon, d, index_mapper=None):
+        super().__init__(epsilon, d, index_mapper)
+        self.update_params(epsilon, d, index_mapper)
 
-    def normalization_data(self, datas):
-        try:
-            ans = [2 * data / (self.b - self.a) + (self.a + self.b) / (self.a - self.b) for data in datas]
-        except Exception:
-            ans = [2 * datas / (self.b - self.a) + (self.a + self.b) / (self.a - self.b), ]
-        return ans
+    def update_params(self, epsilon=None, d=None, index_mapper=None):
+        super().update_params(epsilon, d, index_mapper)
 
-    def privatise(self, datas):
-        C = (np.exp(self.epsilon / 2) + 1) / (np.exp(self.epsilon / 2) - 1)
-        p = (np.exp(self.epsilon) - np.exp(self.epsilon / 2)) / (2 * np.exp(self.epsilon / 2) + 2)
-        ans = []
-        datas = self.normalization_data(datas)
-        for data in datas:
-            l = (C + 1) / 2 * data - (C - 1) / 2
-            r = l + C - 1
-            p1 = (C + l) * p / np.exp(self.epsilon)
-            p2 = (r - l) * p
-            p3 = (C - r) * p / np.exp(self.epsilon)
-            getOne = random.choices(
-                [np.random.uniform(-C, l, 1)[0], np.random.uniform(l, r, 1)[0], np.random.uniform(r, C, 1)[0]],
-                weights=[p1, p2, p3], k=1)[0]
-            ans.append(getOne)
-        if len(ans) == 1:
-            return ans[0]
-        return ans
+        if epsilon is not None or d is not None:  # If epsilon changes, update probs
+            self.const = math.pow(math.e, self.epsilon) + self.d - 1
+            self.p = (math.pow(math.e, self.epsilon)) / (self.const)
+            self.q = 1 / self.const
 
-    def get_expectation(self, datas):
-        return ((sum(self.privatise(datas)) / len(datas)) * (self.b - self.a) + self.a + self.b) / 2
+    def _perturb(self, data):
+        if random.random() < self.p:
+            return data
+        else:
+            perturbed_data = random.randint(0, self.d - 2)
+            if perturbed_data == data:
+                return self.d - 1
+            else:
+                return perturbed_data
+
+    def privatise(self, data):
+        index = self.index_mapper(data)  # Maps data to the range {0,...,d-1}
+        return self._perturb(index)
 
 
 if __name__ == '__main__':
     import sys
 
-    epsilon = float(sys.argv[1])
-    min_value = float(sys.argv[2])
-    max_value = float(sys.argv[3])
     inputs = None
-    with open(sys.argv[4], "r") as file:
+    with open(sys.argv[3], "r") as file:
         inputs = eval(file.read())
-    pm = PiecewiseMechanism(epsilon, [min_value, max_value])
-    privatise = []
-    for v in inputs:
-        privatise.append([pm.privatise(v), ])
-    print(privatise)
-    # print({
-    #     "inputs": list(set(inputs)),
-    #     "outputs": privatise,
-    # })
+    epsilon = float(sys.argv[1])
+    domain = eval(sys.argv[2])
+    client = DEClient(epsilon, len(domain), lambda x: domain.index(x))
+    print([[client.privatise(x),] for x in inputs])

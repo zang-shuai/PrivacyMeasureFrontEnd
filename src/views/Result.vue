@@ -13,7 +13,7 @@
         <el-col :span="12">
           <el-card>
             <template #header>
-              <h3>评估的隐私预算</h3>
+              <h3>度量的隐私预算</h3>
             </template>
             <div class="data-info">{{ displayedEstimatedBudget.toFixed(10) }}</div>
           </el-card>
@@ -25,14 +25,18 @@
             <div style="justify-content: center;">
               <div class="echarts" ref="chartRef" style="width: 100%; height: 400px;"></div>
             </div>
+            <div class="data-info">{{ result_message }}</div>
+
           </el-card>
         </el-col>
       </el-row>
+      <!--      <div v-show="Math.abs(realPrivacyBudget-displayedEstimatedBudget)>realPrivacyBudget/5">aaaa</div>-->
+
       <el-row :gutter="20" class="mb-4">
         <el-col :span="12">
           <el-card>
             <template #header>
-              <h3>数据数量</h3>
+              <h3>测试数据数量</h3>
             </template>
             <div class="data-info">{{ inputs_n }}</div>
           </el-card>
@@ -88,7 +92,6 @@ import {ref, onMounted, computed, onUnmounted} from 'vue';
 import {ElMessage} from 'element-plus';
 import {useResultStore} from '@/stores/result';
 import * as echarts from "echarts"
-
 
 const resultStore = useResultStore();
 const inputs = computed(() => resultStore.inputs);
@@ -191,7 +194,14 @@ const base_url = 'http://localhost:8000/api/';
 
 const realPrivacyBudget = computed(() => resultStore.epsilon);
 const estimatedPrivacyBudget = computed(() => resultStore.result);
-
+let result_message = computed(() => {
+  let boo = Math.abs(realPrivacyBudget.value - estimatedPrivacyBudget.value) / realPrivacyBudget.value;
+  if (boo > 0.05) {
+    return "度量值与预设值差距较大，请注意检查代码bug或算法正确性，或者增加测试数据量重新测试";
+  } else {
+    return "度量值与预设值差距较小，测试结果可信";
+  }
+});
 const displayedEstimatedBudget = ref(0);
 const option = ref({
   tooltip: {
@@ -209,12 +219,15 @@ const option = ref({
         formatter: "{value}",
       },
       min: 0, // 最小刻度
-      max: 10, // 最大刻度
+      max: realPrivacyBudget.value*2, // 最大刻度
       data: [
         {
           value: parseFloat(estimatedPrivacyBudget.value.toFixed(2)),
-          name: "SCORE",
+          name: "Epsilon",
         },
+        // {
+        //   value: realPrivacyBudget.value,
+        // },
       ],
     },
   ],

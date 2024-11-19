@@ -144,62 +144,27 @@ const select2Properity = {
   // api_: ["api_file", "api_encode"],
 };
 
-// const formElements = {
-//   ob_measureDiv: {
-//     input: new Set([
-//       "alg_name", "alg_type", "input_type", "output_type", "call_method",
-//       "code_file", "code_whole", "epsilon", "once_n"
-//     ]),
-//     select: "code_",
-//     code_: ["code_file", "code_whole"],
-//     exe_: ["exe_file", "exe_whole"],
-//     api_: ["api_file", "api_whole"],
-//   },
-//   ab_discreteDiv: {
-//     input: new Set([
-//       "alg_name", "alg_type", "discrete_domain", "call_method", "code_file",
-//       "code_encode", "epsilon", "whole_n"
-//     ]),
-//     select: "code_",
-//     code_: ["code_file", "code_encode"],
-//     exe_: ["exe_file", "exe_encode"],
-//     api_: ["api_file", "api_encode"],
-//   },
-//   ab_numericalDiv: {
-//     input: new Set([
-//       "call_method", "alg_name", "alg_type", "continue_min_domain",
-//       "continue_max_domain", "code_file", "code_encode", "epsilon", "whole_n"
-//     ]),
-//     select: "code_",
-//     code_: ["code_file", "code_encode"],
-//     exe_: ["exe_file", "exe_encode"],
-//     api_: ["api_file", "api_encode"],
-//   },
-//   ab_setDiv: {
-//     input: new Set([
-//       "alg_name", "call_method", "alg_type",
-//       "set_size_domain", "set_domain", "code_file", "epsilon", "whole_n"
-//     ]),
-//     select: "code_",
-//     code_: ["code_file", "code_encode"],
-//     exe_: ["exe_file", "exe_encode"],
-//     api_: ["api_file", "api_encode"],
-//   },
-//   ab_key_valueDiv: {
-//     input: new Set([
-//       "alg_name", "call_method", "alg_type", "kv_domain", "code_file",
-//       "code_encode", "epsilon", "whole_n"
-//     ]),
-//     select: "code_",
-//     code_: ["code_file", "code_encode"],
-//     exe_: ["exe_file", "exe_encode"],
-//     api_: ["api_file", "api_encode"],
-//   },
-// };
+
+// 第一类：未知数据采集算法
+// 第二类：数值型数据采集算法
+// 第三类：类别型数据采集算法
+// 第四类：集合型数据采集算法
+// 第五类：kv 型数据采集算法
+
+// 第六类：未知数据发布算法
+// 第七类：k-匿名数据发布算法
+// 第八类：l-多样性数据发布算法
+// 第九类：t-接近性数据发布算法
+
 
 const selectForm = (selectDiv, alg) => {
+  // let code_file_show =  formData.code_file.show;
+  // let exe_file_show =  formData.exe_file.show;
+  // alert("xxxxx");
+  // formData['output_type'].content = outputTypeOptions[0].value; // 设置为第一个选项的值
   // 获取某个具体算法能够展示的表单项
   let formDataOfAlgList = formDataOfAlg[alg];
+
   console.log("formDataOfAlgList", formDataOfAlgList, alg);
   // 遍历 formData 的键，处理显示与隐藏
   Object.keys(formData).forEach((formDataKey) => {
@@ -210,14 +175,13 @@ const selectForm = (selectDiv, alg) => {
       formData[formDataKey].content = 0;  // 填充隐藏项默认值 0
     }
   });
-
   formData.alg_name.content = alg;
   formData.alg_type.content = selectDiv;
-
   formData.call_method.content = 'code_input';
   currentForm.value = selectDiv;
-
   setDefaultValue(selectDiv, alg);
+  // formData.code_file.show = code_file_show;
+  // formData.exe_file.show = exe_file_show;
 };
 
 const showContent = (select) => {
