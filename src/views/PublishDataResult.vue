@@ -124,11 +124,13 @@ import {ElMessage} from 'element-plus';
 
 const router = useRouter();
 const params = ref({});
+
 const chartContainer = ref(null);
-let chart = null;
 const quasiChartContainer = ref(null);
 const privacyChartContainer = ref(null);
+
 let quasiChart = null;
+let chart = null;
 let privacyChart = null;
 
 const formattedParams = computed(() => {
