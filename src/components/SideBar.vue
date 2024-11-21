@@ -1,7 +1,8 @@
 <template>
   <div class="sidebar-container">
     <el-scrollbar>
-      <el-menu class="sidebar-menu" default-active="1" :collapse="isCollapse" @open="handleOpen" @close="handleClose">
+      <el-menu class="sidebar-menu" default-active="1" :collapse="isCollapse" @open="handleOpen" @close="handleClose"
+        :default-openeds="['6']">
         <el-menu-item index="1" @click="selectForm('ob_measureDiv', 'ob_measure')">
           <span>第一类：未知数据采集算法</span>
         </el-menu-item>
@@ -46,34 +47,21 @@
           </el-menu-item>
         </el-sub-menu>
 
-        <!-- <el-menu-item index="6">
-          <router-link to="/publishData" class="publish-link" style="display: block; width: 100%; height: 100%;">
-            发布数据模式
-          </router-link>
-        </el-menu-item> -->
         <el-sub-menu index="6">
           <template #title>
             <span>发布数据模式</span>
           </template>
-          <el-menu-item index="6-1" @click="selectForm('pb_unknownDiv', 'pb_unknown')">
-            <router-link to="/publishData" class="publish-link" style="display: block; width: 100%; height: 100%;">
-              第六类：未知数据发布算法
-            </router-link>
+          <el-menu-item index="6-1" @click="handlePublishMode('pb_unknown')">
+            第六类：未知数据发布算法
           </el-menu-item>
-          <el-menu-item index="6-2" @click="selectForm('pb_kanonymityDiv', 'pb_kanonymity')">
-            <router-link to="/publishData" class="publish-link" style="display: block; width: 100%; height: 100%;">
-              第七类：k-匿名数据发布算法
-            </router-link>
+          <el-menu-item index="6-2" @click="handlePublishMode('pb_kanonymity')">
+            第七类：k-匿名数据发布算法
           </el-menu-item>
-          <el-menu-item index="6-3" @click="selectForm('pb_ldiversityDiv', 'pb_ldiversity')">
-            <router-link to="/publishData" class="publish-link" style="display: block; width: 100%; height: 100%;">
-              第八类：l-多样性数据发布算法
-            </router-link>
+          <el-menu-item index="6-3" @click="handlePublishMode('pb_ldiversity')">
+            第八类：l-多样性数据发布算法
           </el-menu-item>
-          <el-menu-item index="6-4" @click="selectForm('pb_tclosenessDiv', 'pb_tcloseness')">
-            <router-link to="/publishData" class="publish-link" style="display: block; width: 100%; height: 100%;">
-              第九类：t-接近性数据发布算法
-            </router-link>
+          <el-menu-item index="6-4" @click="handlePublishMode('pb_tcloseness')">
+            第九类：t-接近性数据发布算法
           </el-menu-item>
         </el-sub-menu>
       </el-menu>
@@ -86,10 +74,16 @@ import { defineEmits } from 'vue';
 import { ref } from 'vue';
 import { ElMenu, ElMenuItem, ElSubMenu } from 'element-plus';
 
-const emit = defineEmits(['select-form']);
+const emit = defineEmits(['select-form', 'publish-mode']);
 
 const selectForm = (formType, algName) => {
+  emit('publish-mode', "collection_mode");
   emit('select-form', formType, algName);
+};
+
+// 新增发布模式处理函数
+const handlePublishMode = (mode) => {
+  emit('publish-mode', mode);
 };
 
 const isCollapse = ref(false);
@@ -147,7 +141,7 @@ const setAlgorithms = [
 }
 
 .sidebar-menu:not(.el-menu--collapse) {
-  width: 250px;
+  width: 300px;
 }
 
 :deep(.el-menu-item),

@@ -204,7 +204,7 @@ let result_message = computed(() => {
 
 const displayedEstimatedBudget = ref(0);
 
-const option = ref({
+const estimatedOption = ref({
   tooltip: {
     formatter: "{a} <br/>{b} : {c}%",
   },

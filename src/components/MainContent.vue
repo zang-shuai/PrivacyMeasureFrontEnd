@@ -3,7 +3,8 @@
     <el-card class="algorithm-card">
       <template #header>
         <div class="card-header">
-          <h2 class="algorithm-title">{{ formData.alg_name.content === "ob_measure" ? "第一类：未知数据采集算法" : formData.alg_name.content }}
+          <h2 class="algorithm-title">{{ formData.alg_name.content === "ob_measure" ? "第一类：未知数据采集算法" :
+            formData.alg_name.content }}
           </h2>
         </div>
       </template>

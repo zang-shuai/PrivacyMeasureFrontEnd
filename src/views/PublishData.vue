@@ -2,13 +2,13 @@
   <el-container class="publish-data-container">
     <el-aside width="40%">
       <el-form id="submitDataForm" :model="formData" label-position="top"
-               @submit.prevent="submitForm('submitDataForm', 'submitdata_measure')">
-        <el-input type="hidden" name="csrfmiddlewaretoken" v-model="csrfToken"/>
+        @submit.prevent="submitForm('submitDataForm', 'submitdata_measure')">
+        <el-input type="hidden" name="csrfmiddlewaretoken" v-model="csrfToken" />
 
         <el-card class="mb-4">
           <el-form-item label="原始数据">
             <el-upload action="#" :auto-upload="false" :on-change="(file) => handleFile(file, 'output1')"
-                       accept=".xls, .xlsx, .csv">
+              accept=".xls, .xlsx, .csv">
               <el-button type="primary">选择文件</el-button>
             </el-upload>
           </el-form-item>
@@ -17,7 +17,7 @@
         <el-card class="mb-4">
           <el-form-item label="处理后数据">
             <el-upload action="#" :auto-upload="false" :on-change="(file) => handleFile(file, 'output2')"
-                       accept=".xls, .xlsx, .csv">
+              accept=".xls, .xlsx, .csv">
               <el-button type="primary">选择文件</el-button>
             </el-upload>
           </el-form-item>
@@ -26,19 +26,19 @@
         <el-card class="mb-4">
           <el-form-item label="标识符列">
             <el-select v-model="formData.index" multiple placeholder="请选择标识符列">
-              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col"/>
+              <el-option v-for="col in tableColumns1" :key="col" :label="col" :value="col" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="准标识符列">
             <el-select v-model="formData.pub" multiple placeholder="请选择准标识符列">
-              <el-option v-for="col in availableColumns" :key="col" :label="col" :value="col"/>
+              <el-option v-for="col in availableColumns" :key="col" :label="col" :value="col" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="隐私列">
             <el-select v-model="formData.prv" multiple placeholder="请选择隐私列">
-              <el-option v-for="col in availableColumns" :key="col" :label="col" :value="col"/>
+              <el-option v-for="col in availableColumns" :key="col" :label="col" :value="col" />
             </el-select>
           </el-form-item>
         </el-card>
@@ -76,10 +76,10 @@
             </template>
             <div id="output1" class="output-container">
               <el-table :data="tableData1.slice((currentPage1 - 1) * pageSize, currentPage1 * pageSize)" height="100%">
-                <el-table-column v-for="(col, index) in tableColumns1" :key="index" :prop="col" :label="col"/>
+                <el-table-column v-for="(col, index) in tableColumns1" :key="index" :prop="col" :label="col" />
               </el-table>
               <el-pagination @current-change="handleCurrentChange1" :current-page="currentPage1" :page-size="pageSize"
-                             :total="tableData1.length" layout="prev, pager, next"/>
+                :total="tableData1.length" layout="prev, pager, next" />
             </div>
           </el-card>
         </el-col>
@@ -92,10 +92,10 @@
             </template>
             <div id="output2" class="output-container">
               <el-table :data="tableData2.slice((currentPage2 - 1) * pageSize, currentPage2 * pageSize)" height="100%">
-                <el-table-column v-for="(col, index) in tableColumns2" :key="index" :prop="col" :label="col"/>
+                <el-table-column v-for="(col, index) in tableColumns2" :key="index" :prop="col" :label="col" />
               </el-table>
               <el-pagination @current-change="handleCurrentChange2" :current-page="currentPage2" :page-size="pageSize"
-                             :total="tableData2.length" layout="prev, pager, next"/>
+                :total="tableData2.length" layout="prev, pager, next" />
             </div>
           </el-card>
         </el-col>
@@ -104,17 +104,17 @@
   </el-container>
 
   <el-dialog v-model="isProcessing" title="数据处理中" width="30%" :close-on-click-modal="false"
-             :close-on-press-escape="false" :show-close="false">
+    :close-on-press-escape="false" :show-close="false">
     <div class="processing-content">
-      <el-progress type="circle" :percentage="processingPercentage"/>
+      <el-progress type="circle" :percentage="processingPercentage" />
       <p>{{ processingMessage }}</p>
     </div>
   </el-dialog>
 </template>
 
 <script setup>
-import {ref, reactive, computed, watch} from 'vue';
-import {ElMessage, ElDialog, ElProgress} from 'element-plus';
+import { ref, reactive, computed, watch } from 'vue';
+import { ElMessage, ElDialog, ElProgress } from 'element-plus';
 import * as XLSX from 'xlsx';
 import router from '@/router';
 
@@ -161,7 +161,7 @@ watch(() => formData.index, (newVal) => {
   // 从隐私列和准标识符列中移除已选为标识符的列
   formData.prv = formData.prv.filter(col => !newVal.includes(col));
   formData.pub = formData.pub.filter(col => !newVal.includes(col));
-}, {deep: true});
+}, { deep: true });
 
 const handleCurrentChange1 = (val) => {
   currentPage1.value = val;
@@ -175,9 +175,9 @@ const handleFile = (file, outputId) => {
   const reader = new FileReader();
   reader.onload = (event) => {
     const data = new Uint8Array(event.target.result);
-    const workbook = XLSX.read(data, {type: 'array'});
+    const workbook = XLSX.read(data, { type: 'array' });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
     if (outputId === 'output1') {
       file1.value = file.raw;  // 保存文件对象

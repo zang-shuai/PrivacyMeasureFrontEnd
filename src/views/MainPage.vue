@@ -1,59 +1,77 @@
 <template>
   <main>
-    <Sidebar @select-form="selectForm"/>
-    <MainContent v-model:formData="formData" v-model:currentForm="currentForm" @showContent="showContent"/>
+    <Sidebar @select-form="selectForm" @publish-mode="handlePublishMode" />
+
+    <MainContent v-if="!isPublishMode" v-model:formData="formData" v-model:currentForm="currentForm"
+      @showContent="showContent" />
+
+    <div v-else>
+      <PublishContent />
+    </div>
   </main>
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import Sidebar from '../components/SideBar.vue';
 import MainContent from '../components/MainContent.vue';
+import PublishContent from './PublishData.vue';
+
 
 // 目前展示的表单类型，具体内容在formElements中
 const currentForm = ref('ob_measureDiv');
 
+const isPublishMode = ref(false);
+
+const handlePublishMode = (mode) => {
+  if (mode === "collection_mode") {
+    isPublishMode.value = false;
+  } else {
+    isPublishMode.value = true;
+  }
+};
+
 // 所有的表单选项
 const formData = reactive({
-  input_type: {content: '', show: true},
-  output_type: {content: '', show: true},
-  alg_name: {content: '', show: true},
-  alg_type: {content: '', show: true},
-  call_method: {content: '', show: true},
-  discrete_domain: {content: '', show: true},
-  continue_min_domain: {content: '', show: true},
-  continue_max_domain: {content: '', show: true},
-  set_size_domain: {content: '', show: true},
-  set_domain: {content: '', show: true},
-  key_domain: {content: '', show: true},
-  value_domain: {content: '', show: true},
-  code_file: {content: '', show: true},
-  exe_file: {content: null, show: true},
-  api_file: {content: '', show: true},
-  epsilon: {content: '', show: true},
-  accuracy: {content: '', show: true},
-  once_n: {content: '', show: true},
-  whole_n: {content: '', show: true},
-  ob_format: {content: '', show: true},
-  duchi_format: {content: '', show: true},
-  pm_format: {content: '', show: true},
-  laplace_format: {content: '', show: true},
-  rr_format: {content: '', show: true},
-  sue_format: {content: '', show: true},
-  oue_format: {content: '', show: true},
-  blh_format: {content: '', show: true},
-  olh_format: {content: '', show: true},
-  he_format: {content: '', show: true},
-  ksubset_format: {content: '', show: true},
-  privKVM_format: {content: '', show: true},
-  pckvUE_format: {content: '', show: true},
-  pckvGRR_format: {content: '', show: true},
-  dPAPPOR_format: {content: '', show: true},
-  OLHSampling_format: {content: '', show: true},
-  OUESampling_format: {content: '', show: true},
-  privSet_format: {content: '', show: true},
-  wheel_format: {content: '', show: true},
-  ldpMinner_format: {content: '', show: true},
+  input_type: { content: '', show: true },
+  output_type: { content: '', show: true },
+  alg_name: { content: '', show: true },
+  alg_type: { content: '', show: true },
+  call_method: { content: '', show: true },
+  discrete_domain: { content: '', show: true },
+  continue_min_domain: { content: '', show: true },
+  continue_max_domain: { content: '', show: true },
+  set_size_domain: { content: '', show: true },
+  set_domain: { content: '', show: true },
+  key_domain: { content: '', show: true },
+  value_domain: { content: '', show: true },
+  code_file: { content: '', show: true },
+  exe_file: { content: null, show: true },
+  api_file: { content: '', show: true },
+  epsilon: { content: '', show: true },
+  accuracy: { content: '', show: true },
+  once_n: { content: '', show: true },
+  whole_n: { content: '', show: true },
+  ob_format: { content: '', show: true },
+  duchi_format: { content: '', show: true },
+  pm_format: { content: '', show: true },
+  laplace_format: { content: '', show: true },
+  rr_format: { content: '', show: true },
+  sue_format: { content: '', show: true },
+  oue_format: { content: '', show: true },
+  blh_format: { content: '', show: true },
+  olh_format: { content: '', show: true },
+  he_format: { content: '', show: true },
+  ksubset_format: { content: '', show: true },
+  privKVM_format: { content: '', show: true },
+  pckvUE_format: { content: '', show: true },
+  pckvGRR_format: { content: '', show: true },
+  dPAPPOR_format: { content: '', show: true },
+  OLHSampling_format: { content: '', show: true },
+  OUESampling_format: { content: '', show: true },
+  privSet_format: { content: '', show: true },
+  wheel_format: { content: '', show: true },
+  ldpMinner_format: { content: '', show: true },
 
 });
 
@@ -895,7 +913,7 @@ main {
   border: solid rgba(0, 0, 0, 0.15);
   border-width: 1px 0;
   box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1),
-  inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
+    inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
 }
 
 .scrollable {
