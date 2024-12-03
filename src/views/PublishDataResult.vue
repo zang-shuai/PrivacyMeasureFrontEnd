@@ -380,7 +380,7 @@ const initCharts = () => {
 };
 
 const goBack = () => {
-  router.push('/publishData');
+  router.push('/');
 };
 
 

@@ -171,7 +171,7 @@
                   "inputs": [...],
                   # 输出值列表
                   "outputs": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -190,7 +190,7 @@
                   "inputs": [...],
                   # 输出值列表
                   "outputs": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -209,7 +209,7 @@
                   "inputs": [...],
                   # 输出值列表
                   "outputs": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -228,7 +228,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -247,7 +247,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -266,7 +266,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -285,7 +285,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -304,7 +304,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -323,7 +323,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -342,7 +342,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -361,7 +361,7 @@
                   "index_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -381,7 +381,7 @@
                   "sample_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -401,7 +401,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -420,7 +420,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -440,7 +440,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -460,7 +460,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -479,7 +479,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -498,7 +498,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -517,7 +517,7 @@
                   "encode_list": [...],
                   # 扰动值列表
                   "perturb_list": [...]
-                  }</pre>
+}</pre>
                     </span></label>
                 </div>
               </div>
@@ -671,8 +671,8 @@ const handleFileChange = (file) => {
 }
 
 const inputTypeOptions = [
-  { value: 'single_discrete_input', label: '单个离散' },
-  { value: 'single_continuous_input', label: '单个连续' },
+  { value: 'single_discrete_input', label: '离散' },
+  { value: 'single_continuous_input', label: '连续' },
   // { value: 'discrete_set_input', label: '离散集合' },
   // { value: 'key_value_input', label: '键-值' }
 ];

@@ -29,16 +29,6 @@
 
         <el-sub-menu index="4">
           <template #title>
-            <span>第五类：key-value型数据采集算法</span>
-          </template>
-          <el-menu-item v-for="algo in keyValueAlgorithms" :key="algo.name" :index="algo.name"
-            @click="selectForm('ab_key_valueDiv', algo.name)">
-            {{ algo.name }}
-          </el-menu-item>
-        </el-sub-menu>
-
-        <el-sub-menu index="5">
-          <template #title>
             <span>第四类：集合型数据采集算法</span>
           </template>
           <el-menu-item v-for="algo in setAlgorithms" :key="algo.name" :index="algo.name"
@@ -47,23 +37,32 @@
           </el-menu-item>
         </el-sub-menu>
 
-        <el-sub-menu index="6">
+        <el-sub-menu index="5">
           <template #title>
-            <span>发布数据模式</span>
+            <span>第五类：key-value型数据采集算法</span>
           </template>
-          <el-menu-item index="6-1" @click="handlePublishMode('pb_unknown')">
-            第六类：未知数据发布算法
-          </el-menu-item>
-          <el-menu-item index="6-2" @click="handlePublishMode('pb_kanonymity')">
-            第七类：k-匿名数据发布算法
-          </el-menu-item>
-          <el-menu-item index="6-3" @click="handlePublishMode('pb_ldiversity')">
-            第八类：l-多样性数据发布算法
-          </el-menu-item>
-          <el-menu-item index="6-4" @click="handlePublishMode('pb_tcloseness')">
-            第九类：t-接近性数据发布算法
+          <el-menu-item v-for="algo in keyValueAlgorithms" :key="algo.name" :index="algo.name"
+            @click="selectForm('ab_key_valueDiv', algo.name)">
+            {{ algo.name }}
           </el-menu-item>
         </el-sub-menu>
+
+        <el-menu-item index="6" @click="handlePublishMode('null')">
+          第六类：未知数据发布算法
+        </el-menu-item>
+
+         <el-menu-item index="7" @click="handlePublishMode('k')">
+           第七类：k-匿名数据发布算法
+         </el-menu-item>
+
+        <el-menu-item index="8" @click="handlePublishMode('l')">
+           第八类：l-多样性数据发布算法
+        </el-menu-item>
+
+        <el-menu-item index="9" @click="handlePublishMode('t')">
+          第九类：t-接近性数据发布算法
+        </el-menu-item>
+
       </el-menu>
     </el-scrollbar>
   </div>
