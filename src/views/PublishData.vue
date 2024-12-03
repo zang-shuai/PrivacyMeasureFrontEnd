@@ -42,18 +42,19 @@
             </el-select>
           </el-form-item>
         </el-card>
-
+<!-- 
         <el-card class="mb-4">
           <el-form-item label="选择算法">
-            <el-radio-group v-model="formData.alg">
+            <el-radio-group v-model="props.alg_name">
               <el-radio value="k">k-匿名</el-radio>
               <el-radio value="l">l-多样性</el-radio>
               <el-radio value="t">t-closeness</el-radio>
-              <!--              <el-radio value="dp">差分隐私</el-radio>-->
+                            <el-radio value="dp">差分隐私</el-radio>
               <el-radio value="null">未知</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-card>
+        </el-card> 
+      -->
 
         <el-form-item>
           <el-button type="primary" native-type="submit">提交</el-button>
@@ -122,6 +123,22 @@ const tableData1 = ref([]);
 const tableData2 = ref([]);
 const tableColumns1 = ref([]);
 const tableColumns2 = ref([]);
+
+const props = defineProps({
+  alg_name: {
+    type: String,
+    required: true
+  }
+})
+
+
+// watch(
+//     () => props.alg_name, // 监听 props.message
+//     (newValue, oldValue) => {
+//       console.log('Message changed:', { oldValue, newValue });
+//       // message.value = newValue;  // 更新本地响应式变量
+//     }
+// );
 
 const availableColumns = computed(() => {
   return tableColumns1.value.filter(col => !formData.index.includes(col));

@@ -6,7 +6,7 @@
       @showContent="showContent" />
 
     <div v-else>
-      <PublishContent />
+      <PublishContent :alg_name="alg_name"  />
     </div>
   </main>
 </template>
@@ -23,11 +23,14 @@ const currentForm = ref('ob_measureDiv');
 
 const isPublishMode = ref(false);
 
-const handlePublishMode = (mode) => {
+const alg_name = ref("k")
+
+const handlePublishMode = (mode, alg) => {
   if (mode === "collection_mode") {
     isPublishMode.value = false;
   } else {
     isPublishMode.value = true;
+    alg_name.value = alg;
   }
 };
 
