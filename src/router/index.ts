@@ -10,16 +10,16 @@ const router = createRouter({
       name: 'home',
       component: MainPage
     },
-    {
-      path: '/publishData',
-      name: 'publishData',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-// @ts-ignore
-
-      component: () => import('../views/PublishData.vue')
-    },
+//     {
+//       path: '/publishData',
+//       name: 'publishData',
+//       // route level code-splitting
+//       // this generates a separate chunk (About.[hash].js) for this route
+//       // which is lazy-loaded when the route is visited.
+// // @ts-ignore
+//
+//       component: () => import('../views/PublishData.vue')
+//     },
     {
       path: "/publishDataResult",
       name: "publishDataResult",

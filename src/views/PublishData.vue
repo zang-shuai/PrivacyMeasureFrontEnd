@@ -43,26 +43,26 @@
           </el-form-item>
         </el-card>
 
-        <el-card class="mb-4">
-          <el-form-item label="选择算法">
-            <el-radio-group v-model="formData.alg">
-              <el-radio value="k">k-匿名</el-radio>
-              <el-radio value="l">l-多样性</el-radio>
-              <el-radio value="t">t-closeness</el-radio>
-              <!--              <el-radio value="dp">差分隐私</el-radio>-->
-              <el-radio value="null">未知</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-card>
+<!--        <el-card class="mb-4">-->
+<!--          <el-form-item label="选择算法">-->
+<!--            <el-radio-group v-model="formData.alg">-->
+<!--              <el-radio value="k">k-匿名</el-radio>-->
+<!--              <el-radio value="l">l-多样性</el-radio>-->
+<!--              <el-radio value="t">t-closeness</el-radio>-->
+<!--              &lt;!&ndash;              <el-radio value="dp">差分隐私</el-radio>&ndash;&gt;-->
+<!--              <el-radio value="null">未知</el-radio>-->
+<!--            </el-radio-group>-->
+<!--          </el-form-item>-->
+<!--        </el-card>-->
 
         <el-form-item>
           <el-button type="primary" native-type="submit">提交</el-button>
         </el-form-item>
       </el-form>
 
-      <el-button class="mt-4" type="primary">
-        <router-link to="/" class="link">本地差分隐私模式</router-link>
-      </el-button>
+<!--      <el-button class="mt-4" type="primary">-->
+<!--        <router-link to="/" class="link">本地差分隐私模式</router-link>-->
+<!--      </el-button>-->
     </el-aside>
 
     <el-main>
