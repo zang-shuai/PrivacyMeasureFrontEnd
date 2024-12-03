@@ -6,7 +6,7 @@
       @showContent="showContent" />
 
     <div v-else>
-      <PublishContent />
+      <PublishContent :alg_name="alg_name"/>
     </div>
   </main>
 </template>
@@ -17,6 +17,7 @@ import Sidebar from '../components/SideBar.vue';
 import MainContent from '../components/MainContent.vue';
 import PublishContent from './PublishData.vue';
 
+const alg_name = ref("k")
 
 // 目前展示的表单类型，具体内容在formElements中
 const currentForm = ref('ob_measureDiv');
@@ -28,6 +29,7 @@ const handlePublishMode = (mode) => {
     isPublishMode.value = false;
   } else {
     isPublishMode.value = true;
+    alg_name.value = mode;
   }
 };
 

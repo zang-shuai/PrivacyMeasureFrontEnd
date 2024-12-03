@@ -118,6 +118,13 @@ import { ElMessage, ElDialog, ElProgress } from 'element-plus';
 import * as XLSX from 'xlsx';
 import router from '@/router';
 
+const props = defineProps({
+  alg_name: {
+    type: String,
+    required: true
+  }
+});
+
 const tableData1 = ref([]);
 const tableData2 = ref([]);
 const tableColumns1 = ref([]);
@@ -243,7 +250,7 @@ const submitForm = async (formId, url) => {
       formDataToSend.append('prv', JSON.stringify(processedPrv)); // 私有字段
       formDataToSend.append('pub', JSON.stringify(processedPub)); // 公有字段
       formDataToSend.append('index', JSON.stringify(processedIndex)); // 索引字段
-      formDataToSend.append('alg', formData.alg); // 算法选项
+      formDataToSend.append('alg', props.alg_name); // 算法选项
 
       // 模拟进度更新，每 500 毫秒增加进度条
       const progressInterval = setInterval(() => {
