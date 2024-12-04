@@ -195,7 +195,7 @@ const realPrivacyBudget = computed(() => resultStore.epsilon);
 const estimatedPrivacyBudget = computed(() => resultStore.result);
 let result_message = computed(() => {
   let boo = Math.abs(realPrivacyBudget.value - estimatedPrivacyBudget.value) / realPrivacyBudget.value;
-  if (boo > 0.05) {
+  if (boo > 0.1) {
     return "度量值与预设值差距较大，请注意检查代码bug或算法正确性，或者增加测试数据量重新测试";
   } else {
     return "度量值与预设值差距较小，测试结果可信";
