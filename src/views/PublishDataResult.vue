@@ -14,9 +14,11 @@
               {{ getStatus(params.data?.PLS?.all) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="参数设置" v-show="params.data?.PLS?.para!=='null'">
+
+          <el-descriptions-item label="参数设置">
             {{ params.data?.PLS?.para }}
           </el-descriptions-item>
+
         </el-descriptions>
       </el-card>
       <!--      <el-row :gutter="20" class="mb-4">-->
@@ -24,7 +26,9 @@
       <el-card class="mb-4">
         <div style="justify-content: center;">
           <div class="echarts" ref="chart2Ref" style="width: 100%; height: 400px;"></div>
-          <div>{{result_message(params.data?.PLS?.all)}}</div>
+          <div v-show="params.data?.PLS?.all<=0.3333" style="color: #f56c6c">{{result_message(params.data?.PLS?.all)}}</div>
+          <div v-show="params.data?.PLS?.all>0.3333&&params.data?.PLS?.all<=0.6666" style="color: #E6A23C">{{result_message(params.data?.PLS?.all)}}</div>
+          <div v-show="params.data?.PLS?.all>0.6666" style="color: #67C23A">{{result_message(params.data?.PLS?.all)}}</div>
         </div>
       </el-card>
       <el-card class="mb-4">
@@ -222,9 +226,9 @@ const getRiskClass = (value) => {
 };
 
 let result_message = (value) => {
-  if (value <= 0.3333) return '数据匿名程度相对较高，请注意数据效用';
-  if (value <= 0.6666) return '数据匿名程度中等';
-  return '数据匿名程度较低，请注意隐私泄漏风险';
+  if (value <= 0.3333) return '度量结果表明：数据保护效果较好';
+  if (value <= 0.6666) return '度量结果表明：数据保护效果中等';
+  return '度量结果表明：数据保护效果较差，请注意隐私泄漏风险！！！';
 };
 
 const entropyChartContainer = ref(null);

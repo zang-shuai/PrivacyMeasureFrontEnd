@@ -4,63 +4,63 @@
       <el-menu class="sidebar-menu" default-active="1" :collapse="isCollapse" @open="handleOpen" @close="handleClose"
         :default-openeds="['6']">
         <el-menu-item index="1" @click="selectForm('ob_measureDiv', 'ob_measure')">
-          <span>第一类：未知数据采集算法</span>
+          <span>第一类：通用的数据采集算法评估</span>
         </el-menu-item>
 
         <el-sub-menu index="2">
           <template #title>
-            <span>第二类：数值型数据采集算法</span>
+            <span>第二类：数值型数据采集算法评估</span>
           </template>
           <el-menu-item v-for="algo in numericalAlgorithms" :key="algo.name" :index="algo.name"
             @click="selectForm('ab_numericalDiv', algo.name)">
-            {{ algo.name }}
+            {{ algo.name + "&nbsp;机制" }}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="3">
           <template #title>
-            <span>第三类：类别型数据采集算法</span>
+            <span>第三类：类别型数据采集算法评估</span>
           </template>
           <el-menu-item v-for="algo in discreteAlgorithms" :key="algo.name" :index="algo.name"
             @click="selectForm('ab_discreteDiv', algo.name)">
-            {{ algo.name }}
+            {{ algo.name + "&nbsp;机制" }}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="4">
           <template #title>
-            <span>第四类：集合型数据采集算法</span>
+            <span>第四类：集合型数据采集算法评估</span>
           </template>
           <el-menu-item v-for="algo in setAlgorithms" :key="algo.name" :index="algo.name"
             @click="selectForm('ab_setDiv', algo.name)">
-            {{ algo.name }}
+            {{ algo.name + "&nbsp;机制" }}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="5">
           <template #title>
-            <span>第五类：key-value型数据采集算法</span>
+            <span>第五类：键-值型数据采集算法评估</span>
           </template>
           <el-menu-item v-for="algo in keyValueAlgorithms" :key="algo.name" :index="algo.name"
             @click="selectForm('ab_key_valueDiv', algo.name)">
-            {{ algo.name }}
+            {{ algo.name + "&nbsp;机制" }}
           </el-menu-item>
         </el-sub-menu>
 
         <el-menu-item index="6" @click="handlePublishMode('null')">
-          第六类：未知数据发布算法
+          第六类：通用的数据发布算法评估
         </el-menu-item>
 
          <el-menu-item index="7" @click="handlePublishMode('k')">
-           第七类：k-匿名数据发布算法
+           第七类：k-匿名数据发布算法评估
          </el-menu-item>
 
         <el-menu-item index="8" @click="handlePublishMode('l')">
-           第八类：l-多样性数据发布算法
+           第八类：l-多样性数据发布算法评估
         </el-menu-item>
 
         <el-menu-item index="9" @click="handlePublishMode('t')">
-          第九类：t-接近性数据发布算法
+          第九类：t-closeness数据发布算法评估
         </el-menu-item>
 
       </el-menu>

@@ -12,5 +12,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+
+  build: {
+    rollupOptions: {
+      // 禁用代码分割
+      output: {
+        manualChunks: () => 'everything.js'
+      }
+    }
   }
 })

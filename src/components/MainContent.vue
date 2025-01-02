@@ -3,8 +3,8 @@
     <el-card class="algorithm-card">
       <template #header>
         <div class="card-header">
-          <h2 class="algorithm-title">{{ formData.alg_name.content === "ob_measure" ? "第一类：未知数据采集算法" :
-            formData.alg_name.content }}
+          <h2 class="algorithm-title">{{ formData.alg_name.content === "ob_measure" ? "通用的数据采集算法评估" :
+            formData.alg_name.content + "&nbsp;机制" }}
           </h2>
         </div>
       </template>
@@ -135,15 +135,15 @@
               </div>
 
 
-              <!-- 第一类：未知数据采集算法 算法输入输出参数格式 -->
+              <!-- 第一类：通用的数据采集算法评估 算法输入输出参数格式 -->
               <div v-if="showField('ob_format')" id="ob_format" class="mb-2">
                 <div class="d-flex align-items-center">
                   <label for="ob_format_input" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">第一类：未知数据采集算法算法输入参数格式：<span>隐私预算, 输入域, 数据, 测试输入数量</span></label>
+                    style="white-space: nowrap">第一类：通用的数据采集算法评估算法输入参数格式：<span>隐私预算, 输入域, 数据, 测试输入数量</span></label>
                 </div>
                 <div class="d-flex align-items-center">
                   <label for="ob_format_output" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">第一类：未知数据采集算法算法输出格式：<span>
+                    style="white-space: nowrap">第一类：通用的数据采集算法评估算法输出格式：<span>
                       <!--                      <pre>-->
                       <!--                  {-->
                       <!--                  # 编码值列表-->

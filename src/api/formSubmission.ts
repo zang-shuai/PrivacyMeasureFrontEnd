@@ -7,7 +7,7 @@ export const submitFormData = async (formData: any) => {
     });
 
     try {
-        const response = await request.post('http://localhost:8000/api/ldp_measure', formDataToSend, {
+        const response = await request.post('http://101.43.94.172:8000/api/ldp_measure', formDataToSend, {
             headers: {'Content-Type': 'multipart/form-data'}
         });
 // @ts-ignore

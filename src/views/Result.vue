@@ -189,16 +189,16 @@ const handleOutputsPageChange = (page) => {
   outputsCurrentPage.value = page;
 };
 
-const base_url = 'http://localhost:8000/api/';
+const base_url = 'http://101.43.94.172:8000/api/';
 
 const realPrivacyBudget = computed(() => resultStore.epsilon);
 const estimatedPrivacyBudget = computed(() => resultStore.result);
 let result_message = computed(() => {
   let boo = Math.abs(realPrivacyBudget.value - estimatedPrivacyBudget.value) / realPrivacyBudget.value;
   if (boo > 0.1) {
-    return "度量值与预设值差距较大，请注意检查代码bug或算法正确性，或者增加测试数据量重新测试";
+    return "度量值与真实值差距较大，请注意检查代码bug或算法正确性，或者增加测试数据量重新测试";
   } else {
-    return "度量值与预设值差距较小，测试结果可信";
+    return "度量值与真实值差距较小，度量结果表明，算法实现正确";
   }
 });
 
@@ -224,7 +224,7 @@ const estimatedOption = ref({
       data: [
         {
           value: parseFloat(estimatedPrivacyBudget.value.toFixed(2)),
-          name: "Epsilon",
+          name: "度量值",
         },
       ],
     },
