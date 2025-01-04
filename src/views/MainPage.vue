@@ -3,7 +3,7 @@
     <Sidebar @select-form="selectForm" @publish-mode="handlePublishMode" />
 
     <MainContent v-if="!isPublishMode" v-model:formData="formData" v-model:currentForm="currentForm"
-      @showContent="showContent" />
+      @showContent="showContent" @showExeContent="showExeContent"/>
 
     <div v-else>
       <PublishContent :alg_name="alg_name"/>
@@ -49,6 +49,8 @@ const formData = reactive({
   value_domain: { content: '', show: true },
   code_file: { content: '', show: true },
   exe_file: { content: null, show: true },
+  exe_local:{ content: null, show: true },
+  exe_cloud:{ content: null, show: true },
   api_file: { content: '', show: true },
   epsilon: { content: '', show: true },
   accuracy: { content: '', show: true },
@@ -164,6 +166,11 @@ const select2Properity = {
   // api_: ["api_file", "api_encode"],
 };
 
+const selectExeProperity = {
+  local_: ["exe_local"],
+  cloud_: ["exe_cloud"],
+};
+
 
 // 第一类：通用的数据采集算法评估
 // 第二类：第二类：数值型数据采集算法评估评估数据采集算法评估
@@ -217,6 +224,16 @@ const showContent = (select) => {
   }
 
   formData.call_method.content = select + 'input';
+};
+
+const showExeContent = (selectExe) => {
+  for (let oldSelect of ["exe_cloud", "exe_local"]) {
+    formData[oldSelect].show = false;
+  }
+
+  for (let properity of selectExeProperity[selectExe]) {
+    formData[properity].show = true
+  }
 };
 
 const setDefaultValue = async (selectDiv, alg) => {

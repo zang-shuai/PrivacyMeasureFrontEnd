@@ -17,19 +17,54 @@
 
         <el-card class="mb-4">
           <el-form-item label="原始数据">
-            <el-upload action="#" :auto-upload="false" :on-change="(file) => handleFile(file, 'output1')"
-                       accept=".xls, .xlsx, .csv">
-              <el-button type="primary">选择文件</el-button>
-            </el-upload>
+            <div class="content">
+              <el-radio-group v-model="selecteddata1" @change="changedata1">
+                  <el-radio-button v-for="method in dataMethods" :key="method.value" :value="method.value">
+                    {{ method.label }}
+                  </el-radio-button>
+                </el-radio-group>
+
+              <div v-if="showdata1" id="data_local" class="mb-2">
+                  <label for="local_input" class="form-label text-muted mb-2"
+                            style="white-space: nowrap">请上传xls,xlsx,csv格式文件：</label>
+                  <el-upload action="#" :auto-upload="false" :on-change="(file) => handleFile(file, 'output1')"
+                             accept=".xls, .xlsx, .csv">
+                    <el-button type="primary" style="background-color: #4CAF50; border-color: #4CAF50; color: white;">
+                      选择文件</el-button>
+                  </el-upload>
+              </div>
+
+              <div v-else id="data_cloud" class="mb-2">
+                <label for="cloud_input" class="form-label text-muted mb-2"
+                          style="white-space: nowrap">已选择云端原始数据文件</label>
+              </div>
+            </div>
           </el-form-item>
         </el-card>
 
         <el-card class="mb-4">
           <el-form-item label="处理后数据">
-            <el-upload action="#" :auto-upload="false" :on-change="(file) => handleFile(file, 'output2')"
-                       accept=".xls, .xlsx, .csv">
-              <el-button type="primary">选择文件</el-button>
-            </el-upload>
+            <div class="content">
+               <el-radio-group v-model="selecteddata2" @change="changedata2">
+                  <el-radio-button v-for="method in dataMethods" :key="method.value" :value="method.value">
+                    {{ method.label }}
+                  </el-radio-button>
+                </el-radio-group>
+
+              <div v-if="showdata2" id="data_local" class="mb-2">
+                 <label for="local_input" class="form-label text-muted mb-2"
+                          style="white-space: nowrap">请上传xls,xlsx,csv格式文件：</label>
+                <el-upload action="#" :auto-upload="false" :on-change="(file) => handleFile(file, 'output2')"
+                           accept=".xls, .xlsx, .csv">
+                  <el-button type="primary" style="background-color: #4CAF50; border-color: #4CAF50; color: white;">选择文件</el-button>
+                </el-upload>
+              </div>
+
+              <div v-else id="data_cloud" class="mb-2">
+                <label for="cloud_input" class="form-label text-muted mb-2"
+                          style="white-space: nowrap">已选择云端原始数据文件</label>
+              </div>
+            </div>
           </el-form-item>
         </el-card>
 
@@ -124,7 +159,7 @@
 
 <script setup>
 import {ref, reactive, computed, watch} from 'vue';
-import {ElMessage, ElDialog, ElProgress} from 'element-plus';
+import {ElMessage, ElDialog, ElProgress, ElRadioButton, ElRadioGroup} from 'element-plus';
 import * as XLSX from 'xlsx';
 import router from '@/router';
 
@@ -134,6 +169,22 @@ const props = defineProps({
     required: true
   }
 });
+
+const selectAlg = {
+  null: "general",
+  k: "kanonymity",
+  l: "ldiversity",
+  t: "tcloseness",
+};
+
+const dataMethods = [
+  { value: 'local_', label: '使用本地数据' },
+  { value: 'cloud_', label: '使用云端数据' },
+];
+const showdata1 = ref(true);
+const selecteddata1 = ref("local_");
+const showdata2 = ref(true);
+const selecteddata2 = ref("local_");
 
 const tableData1 = ref([]);
 const tableData2 = ref([]);
@@ -166,12 +217,33 @@ const formData = reactive({
   alg: 'null'
 });
 
+
+
 const base_url = 'http://101.43.94.172:8000/api/';
 
 // 检查表单数据是否填满
 // const isFormValid = computed(() => {
 //   return formData.prv.length > 0 && formData.pub.length > 0  && formData.alg.length  > 0;
 // });
+
+// 监听页面变化
+watch(
+  () => props.alg_name,
+  () => {
+    // 当 选择机制 改变时，重置页面
+    showdata1.value = true;
+    selecteddata1.value = "local_";
+    showdata2.value = true;
+    selecteddata2.value = "local_";
+    tableColumns1.value = [];
+    tableData1.value = [];
+    tableColumns2.value = [];
+    tableData2.value = [];
+    file1.value = null;
+    file2.value = null;
+
+  }
+);
 
 // 监听标识符列的变化
 watch(() => formData.index, (newVal) => {
@@ -180,12 +252,129 @@ watch(() => formData.index, (newVal) => {
   formData.pub = formData.pub.filter(col => !newVal.includes(col));
 }, {deep: true});
 
+const setFile1 = async () => {
+  const response = await fetch('/template/publishdata/data.csv');
+  if (!response.ok) {
+    throw new Error('读取文件失败');
+  }
+  // 只读取一次 Blob
+  const blob = await response.blob();
+  console.log("Blob 数据:", blob,"类型:", blob.constructor.name); // 打印 Blob 对象
+  return blob;
+};
+
+const setFile2 = async () => {
+  const alg = selectAlg[props.alg_name]
+  console.log("Alg",alg)
+  const response = await fetch('/template/publishdata/'+alg+'.csv');
+
+  if (!response.ok) {
+    throw new Error('读取文件失败');
+  }
+  // 只读取一次 Blob
+  const blob = await response.blob();
+  console.log("Blob 数据:", blob,"类型:", blob.constructor.name); // 打印 Blob 对象
+  return blob;
+};
+
+const changedata1 = async (select) => {
+  if (select === "cloud_") {
+    showdata1.value = false;
+
+    try {
+      const blob = await setFile1(); // 等待 Blob 数据解析
+      console.log("处理的 Blob:",  blob); // 确认传入的参数类型
+      handleCloudFile(blob, 'output1');
+    } catch (error) {
+      console.error("处理云文件时出错:", error);
+    }
+
+  } else if (select === "local_") {
+    showdata1.value = true;
+
+    // 清空表单数据
+    tableColumns1.value = [];
+    tableData1.value = [];
+
+    // 如果有 `file1`，也清空它
+    file1.value = null;
+
+    console.log("表单数据已清空");
+  }
+};
+
+const changedata2 = async (select) => {
+ if (select === "cloud_"){
+   showdata2.value = false;
+
+   try {
+      const blob = await setFile2(); // 等待 Blob 数据解析
+      console.log("处理的 Blob:",  blob); // 确认传入的参数类型
+      handleCloudFile(blob, 'output2');
+    } catch (error) {
+      console.error("处理云文件时出错:", error);
+    }
+
+ }
+ else if (select === "local_"){
+   showdata2.value = true;
+
+   // 清空表单数据
+    tableColumns2.value = [];
+    tableData2.value = [];
+
+    // 如果有 `file1`，也清空它
+    file2.value = null;
+
+    console.log("表单数据已清空");
+ }
+};
+
 const handleCurrentChange1 = (val) => {
   currentPage1.value = val;
 };
 
 const handleCurrentChange2 = (val) => {
   currentPage2.value = val;
+};
+
+const handleCloudFile = (blob, outputId) => {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const data = new Uint8Array(event.target.result); // 转为 Uint8Array
+    const workbook = XLSX.read(data, { type: 'array' }); // 解析 Excel 文件
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+    // 根据 outputId 更新不同的表格数据
+    if (outputId === 'output1') {
+      file1.value = blob; // 保存文件对象
+      tableColumns1.value = jsonData[0];
+      tableData1.value = jsonData.slice(1).map((row) => {
+        const rowData = {};
+        tableColumns1.value.forEach((col, index) => {
+          rowData[col] = row[index];
+        });
+        return rowData;
+      });
+    } else {
+      file2.value = blob; // 保存文件对象
+      tableColumns2.value = jsonData[0];
+      tableData2.value = jsonData.slice(1).map((row) => {
+        const rowData = {};
+        tableColumns2.value.forEach((col, index) => {
+          rowData[col] = row[index];
+        });
+        return rowData;
+      });
+    }
+  };
+
+  reader.onerror = (error) => {
+    console.error("文件读取失败:", error);
+  };
+
+  reader.readAsArrayBuffer(blob); // 将 Blob 转为 ArrayBuffer
 };
 
 const handleFile = (file, outputId) => {
@@ -378,5 +567,17 @@ const submitForm = async (formId, url) => {
 .link {
   text-decoration: none;
   color: inherit;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+
+.align-items-center {
+  align-items: center;
 }
 </style>
