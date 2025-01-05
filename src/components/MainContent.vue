@@ -107,17 +107,32 @@
               <!-- exe_file 算法可执行文件 -->
               <div v-if="showField('exe_file')" id="exe_file" class="mb-2">
                 <div class="d-flex align-items-center">
-                  <label for="exe_file_input" class="form-label text-muted mb-2"
-                    style="white-space: nowrap">请上传算法的可执行文件：</label>
-                  <el-upload class="upload-demo" :action="'#'" :auto-upload="false" :on-change="handleFileChange"
-                    :limit="1">
-                    <el-button size="small" type="primary">选择文件</el-button>
-                    <template #tip>
-                      <div class="el-upload__tip">
-                        只能上传一个可执行文件
-                      </div>
-                    </template>
-                  </el-upload>
+                  <el-radio-group v-model="selectedExe" @change="changeExe">
+                    <el-radio-button v-for="method in exeMethods" :key="method.value" :value="method.value">
+                        {{ method.label }}
+                    </el-radio-button>
+                  </el-radio-group>
+
+                   <div v-if="showField('exe_local')" id="exe_local" class="mb-2">
+                      <label for="exe_file_input" class="form-label text-muted mb-2"
+                        style="white-space: nowrap">请上传算法的可执行文件：</label>
+                      <el-upload class="upload-demo" :action="'#'" :auto-upload="false" :on-change="handleFileChange"
+                        :limit="1">
+                        <el-button size="small" type="primary"
+                             style="background-color: #4CAF50; border-color: #4CAF50; color: white;">选择文件</el-button>
+                        <template #tip>
+                          <div class="el-upload__tip">
+                            只能上传一个可执行文件
+                          </div>
+                        </template>
+                      </el-upload>
+                   </div>
+
+                  <div v-if="showField('exe_cloud')" id="exe_cloud" class="mb-2">
+                    <label for="exe_cloud_input" class="form-label text-muted mb-2"
+                        style="white-space: nowrap">已选择云端默认可执行文件</label>
+                  </div>
+
                 </div>
               </div>
 
@@ -588,9 +603,10 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['showContent']);
+const emit = defineEmits(['showContent','showExeContent']);
 
 const selectedMethod = ref("code_");
+const selectedExe = ref("cloud_");
 const resultStore = useResultStore();
 
 const isProcessing = ref(false);
@@ -605,6 +621,7 @@ watch(
   () => {
     // 当 currentForm 改变时，重置 selectedMethod 为默认值 "code_"
     selectedMethod.value = "code_";
+    selectedExe.value = "cloud_";
   }
 );
 
@@ -614,6 +631,10 @@ const showField = (fieldName) => {
 
 const changeMethod = (select) => {
   emit("showContent", select)
+}
+
+const changeExe = (selectExe) => {
+  emit("showExeContent", selectExe)
 }
 
 const submitForm = async () => {
@@ -700,6 +721,11 @@ const callMethods = [
   { value: 'code_', label: '代码调用' },
   { value: 'exe_', label: '可执行文件调用' },
   // { value: 'api_', label: '远程 api 调用' }
+];
+
+const exeMethods = [
+  { value: 'cloud_', label: '使用云端可执行文件' },
+  { value: 'local_', label: '使用本地可执行文件' },
 ];
 
 </script>
